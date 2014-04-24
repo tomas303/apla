@@ -1,0 +1,161 @@
+object CommandForm: TCommandForm
+  Left = 162
+  Height = 325
+  Top = 106
+  Width = 500
+  Caption = 'Command'
+  ClientHeight = 325
+  ClientWidth = 500
+  LCLVersion = '1.3'
+  object pgCommand: TPageControl
+    Left = 0
+    Height = 289
+    Top = 0
+    Width = 500
+    ActivePage = tsParameters
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 0
+    object tsCommand: TTabSheet
+      Caption = '&Command'
+      ClientHeight = 260
+      ClientWidth = 496
+      object Name_bind: TLabeledEdit
+        Left = 86
+        Height = 23
+        Top = 13
+        Width = 375
+        Anchors = [akTop, akLeft, akRight]
+        EditLabel.AnchorSideTop.Control = Name_bind
+        EditLabel.AnchorSideTop.Side = asrCenter
+        EditLabel.AnchorSideRight.Control = Name_bind
+        EditLabel.AnchorSideBottom.Control = Name_bind
+        EditLabel.AnchorSideBottom.Side = asrBottom
+        EditLabel.Left = 44
+        EditLabel.Height = 15
+        EditLabel.Top = 17
+        EditLabel.Width = 39
+        EditLabel.Caption = 'Name'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        TabOrder = 0
+        Text = 'Name'
+      end
+      object Directory_bind: TDirectoryEdit
+        Left = 86
+        Height = 23
+        Top = 45
+        Width = 375
+        ShowHidden = False
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        MaxLength = 0
+        TabOrder = 1
+      end
+      object Command_bind: TMemo
+        Left = 86
+        Height = 178
+        Top = 77
+        Width = 375
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Lines.Strings = (
+          'Command_bind'
+        )
+        TabOrder = 2
+      end
+      object lblDirectory: TLabel
+        Left = 14
+        Height = 15
+        Top = 45
+        Width = 58
+        Caption = 'Directory'
+        ParentColor = False
+      end
+      object lblCommand: TLabel
+        Left = 10
+        Height = 15
+        Top = 77
+        Width = 67
+        Caption = 'Command'
+        ParentColor = False
+      end
+    end
+    object tsParameters: TTabSheet
+      Caption = '&Parameters'
+      ClientHeight = 260
+      ClientWidth = 496
+      object Parameters_bind: TStringGrid
+        Left = 0
+        Height = 260
+        Top = 0
+        Width = 496
+        Align = alClient
+        AutoFillColumns = True
+        FixedCols = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAutoAddRows, goTabs, goSmoothScroll]
+        TabOrder = 0
+        ColWidths = (
+          98
+          98
+          98
+          98
+          100
+        )
+      end
+    end
+    object tsEnvVariables: TTabSheet
+      Caption = '&Environment variables'
+      ClientHeight = 260
+      ClientWidth = 496
+      object EnvVariables_bind: TStringGrid
+        Left = 0
+        Height = 260
+        Top = 0
+        Width = 496
+        Align = alClient
+        AutoFillColumns = True
+        ColCount = 0
+        FixedCols = 0
+        FixedRows = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAutoAddRows, goTabs, goSmoothScroll]
+        RowCount = 0
+        TabOrder = 0
+      end
+    end
+  end
+  object pnBottom: TPanel
+    Left = 0
+    Height = 36
+    Top = 289
+    Width = 500
+    Align = alBottom
+    ClientHeight = 36
+    ClientWidth = 500
+    TabOrder = 1
+    object btnOK: TBitBtn
+      Left = 232
+      Height = 30
+      Top = 2
+      Width = 112
+      Anchors = [akTop, akRight]
+      Default = True
+      DefaultCaption = True
+      Kind = bkOK
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object btnCancel: TBitBtn
+      Left = 352
+      Height = 30
+      Top = 2
+      Width = 112
+      Anchors = [akTop, akRight]
+      Cancel = True
+      DefaultCaption = True
+      Kind = bkCancel
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+end
