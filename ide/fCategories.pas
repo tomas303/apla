@@ -22,9 +22,10 @@ type
     lbCategories: TListBox;
     pnRunEdit: TPanel;
     procedure btnAddClick(Sender: TObject);
+    procedure btnDeleteClick(Sender: TObject);
+    procedure btnEditClick(Sender: TObject);
   private
     fContext: IMainContext;
-    //fList: IRBDataList;
     fListBinder: IRBTallyBinder;
   protected
     procedure Actualize;
@@ -52,9 +53,31 @@ begin
   end;
 end;
 
+procedure TCategoriesForm.btnDeleteClick(Sender: TObject);
+begin
+  // not supported now
+end;
+
+procedure TCategoriesForm.btnEditClick(Sender: TObject);
+var
+  mData, mNewData: IRBData;
+begin
+  mData := fListBinder.CurrentData;
+  if mData = nil then
+    Exit;
+  mNewData := fContext.SerialFactory.CreateObject(mData.ClassName) as IRBData;
+  mNewData.Assign(mData);
+  if TCategoryForm.Edit(mNewData, fContext.DataQuery) then
+  begin
+    mData.Assign(mNewData);
+    fContext.DataStore.Save(mData);
+    fContext.DataStore.Flush;
+    Actualize;
+  end;
+end;
+
 procedure TCategoriesForm.Actualize;
 begin
-  //fList := fContext.DataStore.LoadList('TCategory');
   fListBinder.Reload;
 end;
 
@@ -63,7 +86,6 @@ var
   mClass: TClass;
 begin
   fContext := AContext;
-  //fList := fContext.DataStore.LoadList('TCategory');
   mClass := fContext.SerialFactory.FindClass('TCategory');
   fListBinder := TLib.NewListBinder(lbCategories, fContext.DataQuery, mClass);
   Actualize;

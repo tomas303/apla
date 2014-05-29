@@ -17,7 +17,7 @@ type
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
     Name_bind: TLabeledEdit;
-    Panel1: TPanel;
+    pnDetail: TPanel;
     Commands_bind: TStringGrid;
     pnBottom: TPanel;
   private

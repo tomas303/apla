@@ -34,6 +34,7 @@ object CategoriesForm: TCategoriesForm
       Width = 75
       Anchors = [akTop, akRight]
       Caption = 'Edit'
+      OnClick = btnEditClick
       TabOrder = 1
     end
     object btnDelete: TButton
@@ -43,6 +44,7 @@ object CategoriesForm: TCategoriesForm
       Width = 75
       Anchors = [akTop, akRight]
       Caption = 'Delete'
+      OnClick = btnDeleteClick
       TabOrder = 2
     end
   end
@@ -55,7 +57,7 @@ object CategoriesForm: TCategoriesForm
     Items.Strings = (
       'Name'
     )
-    ItemHeight = 21
+    ItemHeight = 24
     ScrollWidth = 316
     TabOrder = 1
   end

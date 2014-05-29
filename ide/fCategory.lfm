@@ -1,7 +1,7 @@
 object CategoryForm: TCategoryForm
-  Left = 160
+  Left = 316
   Height = 471
-  Top = 134
+  Top = 127
   Width = 721
   Caption = 'Category'
   ClientHeight = 471
@@ -16,7 +16,7 @@ object CategoryForm: TCategoryForm
     AutoFillColumns = True
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAutoAddRows, goTabs, goSmoothScroll]
-    TabOrder = 0
+    TabOrder = 1
     ColWidths = (
       143
       143
@@ -25,19 +25,19 @@ object CategoryForm: TCategoryForm
       145
     )
   end
-  object Panel1: TPanel
+  object pnDetail: TPanel
     Left = 0
     Height = 40
     Top = 0
     Width = 721
     Align = alTop
-    Caption = 'Panel1'
+    Caption = 'pnDetail'
     ClientHeight = 40
     ClientWidth = 721
-    TabOrder = 1
+    TabOrder = 0
     object Name_bind: TLabeledEdit
       Left = 48
-      Height = 23
+      Height = 24
       Top = 8
       Width = 648
       Anchors = [akTop, akLeft, akRight]
@@ -46,10 +46,10 @@ object CategoryForm: TCategoryForm
       EditLabel.AnchorSideRight.Control = Name_bind
       EditLabel.AnchorSideBottom.Control = Name_bind
       EditLabel.AnchorSideBottom.Side = asrBottom
-      EditLabel.Left = 6
-      EditLabel.Height = 15
-      EditLabel.Top = 12
-      EditLabel.Width = 39
+      EditLabel.Left = 11
+      EditLabel.Height = 18
+      EditLabel.Top = 11
+      EditLabel.Width = 34
       EditLabel.Caption = 'Name'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
