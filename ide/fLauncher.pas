@@ -6,11 +6,19 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ExtCtrls, iMain, tvr.rtti.broker.iBroker, uCommands, fCommands, fCategories;
+  ExtCtrls, iMain, tvr.rtti.broker.iBroker, uCommands, fCommands, fCategories,
+  fgl, uCategories;
 
 type
 
   { TLauncherForm }
+
+  TCustomLaunchList = specialize TFPGMap<pointer, TCommand>;
+
+  { TLaunchList }
+
+  TLaunchList = class(TCustomLaunchList)
+  end;
 
   TLauncherForm = class(TForm, IMainContextSupport)
     mnMain: TMainMenu;
@@ -22,6 +30,7 @@ type
   private
     fContext: IMainContext;
     fRunList: IRBDataList;
+    fLaunchList: TLaunchList;
   protected
     function CreateMenuItem(AParentMenu: TMenuItem; const ACaption: string;
       AOnClick: TNotifyEvent; ATag: integer = 0): TMenuItem;
@@ -34,13 +43,17 @@ type
     procedure AddManageCategories(AParentMenu: TMenuItem);
     procedure AddSeparator(AParentMenu: TMenuItem);
     procedure AddAllCommnads(AParentMenu: TMenuItem);
+    procedure AddAllCategories(AParentMenu: TMenuItem);
+    procedure AddCategoryCommnads(const ACategory: TCategory; AParentMenu: TMenuItem);
     procedure RebuildMenu(const ARootMenu: TMenuItem);
     procedure ReloadCommands;
     procedure Rebuild;
   protected
     procedure AttachMainContext(const AContext: IMainContext);
   public
-  end;
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+end;
 
 var
   LauncherForm: TLauncherForm;
@@ -68,10 +81,11 @@ end;
 
 procedure TLauncherForm.OnRunCommandClick(Sender: TObject);
 var
-  mData: IRBData;
+  mCommand: TCommand;
 begin
-  mData := fRunList.AsData[(Sender as TMenuItem).Tag];
-  (mData.UnderObject as TCommand).Run;
+  mCommand := fLaunchList.KeyData[Sender];
+  if mCommand <> nil then
+    mCommand.Run;
 end;
 
 procedure TLauncherForm.OnCloseApplicationClick(Sender: TObject);
@@ -118,9 +132,48 @@ begin
   begin
     mItem := TMenuItem.Create(mnMain);
     mItem.Caption := fRunList.AsData[i].ItemByName['Name'].AsString;
-    mItem.Tag := i;
     mItem.OnClick := @OnRunCommandClick;
     AParentMenu.Add(mItem);
+    fLaunchList.Add(mItem, fRunList[i] as TCommand);
+  end;
+end;
+
+procedure TLauncherForm.AddAllCategories(AParentMenu: TMenuItem);
+var
+  i: integer;
+  mItem: TMenuItem;
+  mList: IRBDataList;
+  mCategory: TCategory;
+begin
+  mList := fContext.DataStore.LoadList('TCategory');
+  for i := 0 to mList.Count - 1 do
+  begin
+    mItem := TMenuItem.Create(mnMain);
+    mCategory := mList[i] as TCategory;
+    mItem.Caption := mCategory.Name;
+    AddCategoryCommnads(mCategory, mItem);
+    if mItem.Count = 0 then
+      mItem.Free
+    else
+      AParentMenu.Add(mItem);
+  end;
+end;
+
+procedure TLauncherForm.AddCategoryCommnads(const ACategory: TCategory;
+  AParentMenu: TMenuItem);
+var
+  i: integer;
+  mItem: TMenuItem;
+  mCommand: TCommand;
+begin
+  for i := 0 to ACategory.CommandsCount - 1 do
+  begin
+    mItem := TMenuItem.Create(mnMain);
+    mCommand := ACategory.Commands[i];
+    mItem.Caption := mCommand.Name;
+    mItem.OnClick := @OnRunCommandClick;
+    AParentMenu.Add(mItem);
+    fLaunchList.Add(mItem, mCommand);
   end;
 end;
 
@@ -128,7 +181,9 @@ procedure TLauncherForm.RebuildMenu(const ARootMenu: TMenuItem);
 var
   mItem: TMenuItem;
 begin
+  fLaunchList.Clear;
   ARootMenu.Clear;
+  AddAllCategories(ARootMenu);
   mItem := TMenuItem.Create(ARootMenu.Owner);
   mItem.Caption := 'All commands';
   ARootMenu.Add(mItem);
@@ -154,6 +209,18 @@ procedure TLauncherForm.AttachMainContext(const AContext: IMainContext);
 begin
   fContext := AContext;
   Rebuild;
+end;
+
+constructor TLauncherForm.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  fLaunchList := TLaunchList.Create;
+end;
+
+destructor TLauncherForm.Destroy;
+begin
+  FreeAndNil(fLaunchList);
+  inherited Destroy;
 end;
 
 end.
