@@ -26,7 +26,7 @@ type
     procedure btnEditClick(Sender: TObject);
   private
     fContext: IMainContext;
-    fListBinder: IRBTallyBinder;
+    fBinder: IRBTallyBinder;
   protected
     procedure Actualize;
   public
@@ -62,7 +62,7 @@ procedure TCategoriesForm.btnEditClick(Sender: TObject);
 var
   mData, mNewData: IRBData;
 begin
-  mData := fListBinder.CurrentData;
+  mData := fBinder.CurrentData;
   if mData = nil then
     Exit;
   mNewData := fContext.SerialFactory.CreateObject(mData.ClassName) as IRBData;
@@ -78,7 +78,7 @@ end;
 
 procedure TCategoriesForm.Actualize;
 begin
-  fListBinder.Reload;
+  fBinder.Reload;
 end;
 
 procedure TCategoriesForm.AttachMainContext(const AContext: IMainContext);
@@ -87,7 +87,7 @@ var
 begin
   fContext := AContext;
   mClass := fContext.SerialFactory.FindClass('TCategory');
-  fListBinder := TLib.NewListBinder(lbCategories, fContext.DataQuery, mClass);
+  fBinder := TLib.NewListBinder(lbCategories, fContext.DataQuery, mClass);
   Actualize;
 end;
 
