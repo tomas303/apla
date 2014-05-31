@@ -29,8 +29,6 @@ type
   private
     fContext: IMainContext;
     fRunListBinder: IRBTallyBinder;
-    fRunList: IRBDataList;
-    function GetActualRunData: IRBData;
     procedure RunCommand(const AData: IRBData);
   protected
     procedure ActualizeRunTab;
@@ -70,7 +68,7 @@ procedure TCommandsForm.btnEditClick(Sender: TObject);
 var
   mData, mNewData: IRBData;
 begin
-  mData := GetActualRunData;
+  mData := fRunListBinder.CurrentData;
   if mData = nil then
     Exit;
   mNewData := fContext.SerialFactory.CreateObject('TCommand') as IRBData;
@@ -88,18 +86,7 @@ procedure TCommandsForm.grdCommandsKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = 13 then
-    RunCommand(GetActualRunData);
-end;
-
-function TCommandsForm.GetActualRunData: IRBData;
-var
-  mIndex: integer;
-begin
-  Result := nil;
-  mIndex := grdCommands.Row - grdCommands.FixedRows;
-  if (mIndex < 0) or (mIndex > fRunList.Count - 1) then
-    Exit;
-  Result := fRunList.AsData[mIndex];
+    RunCommand(fRunListBinder.CurrentData);
 end;
 
 procedure TCommandsForm.RunCommand(const AData: IRBData);
@@ -114,7 +101,6 @@ var
   mClass: TClass;
 begin
   mClass := fContext.SerialFactory.FindClass('TCommand');
-  fRunList := fContext.DataStore.LoadList('TCommand');
   fRunListBinder := TLib.NewListBinder(grdCommands, fContext.DataQuery, mClass);
 end;
 
