@@ -1,7 +1,7 @@
 object CommandForm: TCommandForm
-  Left = 162
+  Left = 529
   Height = 325
-  Top = 106
+  Top = 132
   Width = 500
   Caption = 'Command'
   ClientHeight = 325
@@ -12,40 +12,19 @@ object CommandForm: TCommandForm
     Height = 289
     Top = 0
     Width = 500
-    ActivePage = tsParameters
+    ActivePage = tsCommand
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object tsCommand: TTabSheet
       Caption = '&Command'
-      ClientHeight = 260
-      ClientWidth = 496
-      object Name_bind: TLabeledEdit
-        Left = 86
-        Height = 23
-        Top = 13
-        Width = 375
-        Anchors = [akTop, akLeft, akRight]
-        EditLabel.AnchorSideTop.Control = Name_bind
-        EditLabel.AnchorSideTop.Side = asrCenter
-        EditLabel.AnchorSideRight.Control = Name_bind
-        EditLabel.AnchorSideBottom.Control = Name_bind
-        EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 44
-        EditLabel.Height = 15
-        EditLabel.Top = 17
-        EditLabel.Width = 39
-        EditLabel.Caption = 'Name'
-        EditLabel.ParentColor = False
-        LabelPosition = lpLeft
-        TabOrder = 0
-        Text = 'Name'
-      end
+      ClientHeight = 249
+      ClientWidth = 492
       object Directory_bind: TDirectoryEdit
         Left = 86
-        Height = 23
-        Top = 45
-        Width = 375
+        Height = 24
+        Top = 44
+        Width = 371
         ShowHidden = False
         ButtonWidth = 23
         NumGlyphs = 1
@@ -55,64 +34,99 @@ object CommandForm: TCommandForm
       end
       object Command_bind: TMemo
         Left = 86
-        Height = 178
-        Top = 77
-        Width = 375
+        Height = 144
+        Top = 100
+        Width = 371
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
           'Command_bind'
         )
-        TabOrder = 2
+        TabOrder = 3
       end
       object lblDirectory: TLabel
-        Left = 14
-        Height = 15
-        Top = 45
-        Width = 58
+        Left = 16
+        Height = 18
+        Top = 44
+        Width = 54
         Caption = 'Directory'
         ParentColor = False
       end
       object lblCommand: TLabel
-        Left = 10
-        Height = 15
-        Top = 77
-        Width = 67
+        Left = 12
+        Height = 18
+        Top = 100
+        Width = 58
         Caption = 'Command'
+        ParentColor = False
+      end
+      object EnvVariableTemplate_bind: TComboBox
+        Left = 86
+        Height = 24
+        Top = 73
+        Width = 371
+        Anchors = [akTop, akLeft, akRight]
+        ItemHeight = 0
+        TabOrder = 2
+        Text = 'EnvVariableTemplate_bind'
+      end
+      object lblEnvVariableTemplate: TLabel
+        Left = 16
+        Height = 18
+        Top = 73
+        Width = 54
+        Caption = 'Template'
+        ParentColor = False
+      end
+      object Name_bind: TEdit
+        Left = 86
+        Height = 24
+        Top = 14
+        Width = 371
+        Anchors = [akTop, akLeft, akRight]
+        TabOrder = 0
+        Text = 'Name_bind'
+      end
+      object lblName: TLabel
+        Left = 36
+        Height = 18
+        Top = 14
+        Width = 34
+        Caption = 'Name'
         ParentColor = False
       end
     end
     object tsParameters: TTabSheet
       Caption = '&Parameters'
-      ClientHeight = 260
-      ClientWidth = 496
+      ClientHeight = 249
+      ClientWidth = 492
       object Parameters_bind: TStringGrid
         Left = 0
-        Height = 260
+        Height = 249
         Top = 0
-        Width = 496
+        Width = 492
         Align = alClient
         AutoFillColumns = True
         FixedCols = 0
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAutoAddRows, goTabs, goSmoothScroll]
         TabOrder = 0
         ColWidths = (
-          98
-          98
-          98
-          98
+          97
+          97
+          97
+          97
           100
         )
       end
     end
     object tsEnvVariables: TTabSheet
       Caption = '&Environment variables'
-      ClientHeight = 260
-      ClientWidth = 496
+      ClientHeight = 249
+      ClientWidth = 492
       object EnvVariables_bind: TStringGrid
         Left = 0
-        Height = 260
+        Height = 249
         Top = 0
-        Width = 496
+        Width = 492
         Align = alClient
         AutoFillColumns = True
         ColCount = 0

@@ -16,14 +16,17 @@ type
   TCommandForm = class(TForm)
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
+    lblName: TLabel;
+    Name_bind: TEdit;
+    EnvVariableTemplate_bind: TComboBox;
     Command_bind: TMemo;
     Directory_bind: TDirectoryEdit;
     EnvVariables_bind: TStringGrid;
+    lblEnvVariableTemplate: TLabel;
     pnBottom: TPanel;
     Parameters_bind: TStringGrid;
     lblCommand: TLabel;
     lblDirectory: TLabel;
-    Name_bind: TLabeledEdit;
     pgCommand: TPageControl;
     tsEnvVariables: TTabSheet;
     tsParameters: TTabSheet;
