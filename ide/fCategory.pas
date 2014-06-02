@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Grids, Buttons, tvr.rtti.broker.iBroker, tvr.rtti.idebinder.iBindings,
-  tvr.rtti.idebinder.Lib;
+  Grids, Buttons, StdCtrls, tvr.rtti.broker.iBroker,
+  tvr.rtti.idebinder.iBindings, tvr.rtti.idebinder.Lib;
 
 type
 
@@ -16,6 +16,7 @@ type
   TCategoryForm = class(TForm)
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
+    Favorite_bind: TCheckBox;
     Name_bind: TLabeledEdit;
     pnDetail: TPanel;
     Commands_bind: TStringGrid;

@@ -18,6 +18,7 @@ type
   private
     fName: string;
     fCommands: TCommands;
+    fFavorite: Boolean;
     function GetCommands(AIndex: Integer; APropIndex: integer): TCommand;
     function GetCommandsCount(AIndex: Integer): integer;
     procedure SetCommands(AIndex: Integer; APropIndex: integer; AValue: TCommand);
@@ -29,6 +30,7 @@ type
     property Name: string read fName write fName;
     property Commands[AIndex: integer]: TCommand index crbList + crbObject + crbRef read GetCommands write SetCommands; default;
     property CommandsCount: integer index crbListCounter read GetCommandsCount write SetCommandsCount;
+    property Favorite: Boolean read fFavorite write fFavorite;
   end;
 
 implementation

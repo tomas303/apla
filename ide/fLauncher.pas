@@ -47,7 +47,8 @@ type
     procedure AddManageCategories(AParentMenu: TMenuItem);
     procedure AddSeparator(AParentMenu: TMenuItem);
     procedure AddAllCommnads(AParentMenu: TMenuItem);
-    procedure AddAllCategories(AParentMenu: TMenuItem);
+    procedure AddNonFavoriteCategories(AParentMenu: TMenuItem);
+    procedure AddFavoriteCategories(AParentMenu: TMenuItem);
     procedure AddCategoryCommnads(const ACategory: TCategory; AParentMenu: TMenuItem);
     procedure AddRunAllCategoryCommnad(const ACategory: TCategory; AParentMenu: TMenuItem);
     procedure RebuildMenu(const ARootMenu: TMenuItem);
@@ -167,7 +168,7 @@ begin
   end;
 end;
 
-procedure TLauncherForm.AddAllCategories(AParentMenu: TMenuItem);
+procedure TLauncherForm.AddNonFavoriteCategories(AParentMenu: TMenuItem);
 var
   i: integer;
   mItem: TMenuItem;
@@ -177,15 +178,37 @@ begin
   mList := fContext.DataStore.LoadList('TCategory');
   for i := 0 to mList.Count - 1 do
   begin
-    mItem := TMenuItem.Create(mnMain);
     mCategory := mList[i] as TCategory;
+    if mCategory.Favorite then
+      Continue;
+    if mCategory.CommandsCount = 0 then
+      Continue;
+    mItem := TMenuItem.Create(mnMain);
     mItem.Caption := mCategory.Name;
+    AddRunAllCategoryCommnad(mCategory, mItem);
     AddCategoryCommnads(mCategory, mItem);
-    if mItem.Count = 0 then
-      mItem.Free
-    else
-      AParentMenu.Add(mItem);
+    AParentMenu.Add(mItem);
   end;
+end;
+
+procedure TLauncherForm.AddFavoriteCategories(AParentMenu: TMenuItem);
+var
+  i: integer;
+  mList: IRBDataList;
+  mCategory: TCategory;
+begin
+  mList := fContext.DataStore.LoadList('TCategory');
+  for i := 0 to mList.Count - 1 do
+  begin
+    mCategory := mList[i] as TCategory;
+    if not mCategory.Favorite then
+      Continue;
+    if mCategory.CommandsCount = 0 then
+      Continue;
+    AddCategoryCommnads(mCategory, AParentMenu);
+  end;
+  if AParentMenu.Count > 0 then
+    AddSeparator(AParentMenu);
 end;
 
 procedure TLauncherForm.AddCategoryCommnads(const ACategory: TCategory;
@@ -195,9 +218,6 @@ var
   mItem: TMenuItem;
   mCommand: TCommand;
 begin
-  if ACategory.CommandsCount = 0 then
-    Exit;
-  AddRunAllCategoryCommnad(ACategory, AParentMenu);
   for i := 0 to ACategory.CommandsCount - 1 do
   begin
     mItem := TMenuItem.Create(mnMain);
@@ -228,7 +248,8 @@ var
 begin
   fLaunchList.Clear;
   ARootMenu.Clear;
-  AddAllCategories(ARootMenu);
+  AddFavoriteCategories(ARootMenu);
+  AddNonFavoriteCategories(ARootMenu);
   mItem := TMenuItem.Create(ARootMenu.Owner);
   mItem.Caption := 'All commands';
   ARootMenu.Add(mItem);

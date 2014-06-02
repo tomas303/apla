@@ -39,7 +39,7 @@ object CategoryForm: TCategoryForm
       Left = 48
       Height = 24
       Top = 8
-      Width = 648
+      Width = 560
       Anchors = [akTop, akLeft, akRight]
       EditLabel.AnchorSideTop.Control = Name_bind
       EditLabel.AnchorSideTop.Side = asrCenter
@@ -55,6 +55,15 @@ object CategoryForm: TCategoryForm
       LabelPosition = lpLeft
       TabOrder = 0
       Text = 'Name'
+    end
+    object Favorite_bind: TCheckBox
+      Left = 632
+      Height = 26
+      Top = 6
+      Width = 74
+      Anchors = [akTop, akRight]
+      Caption = 'Favorite'
+      TabOrder = 1
     end
   end
   object pnBottom: TPanel
