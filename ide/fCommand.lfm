@@ -1,30 +1,30 @@
 object CommandForm: TCommandForm
   Left = 529
-  Height = 325
+  Height = 429
   Top = 132
-  Width = 500
+  Width = 531
   Caption = 'Command'
-  ClientHeight = 325
-  ClientWidth = 500
+  ClientHeight = 429
+  ClientWidth = 531
   LCLVersion = '1.3'
   object pgCommand: TPageControl
     Left = 0
-    Height = 289
+    Height = 393
     Top = 0
-    Width = 500
+    Width = 531
     ActivePage = tsCommand
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tsCommand: TTabSheet
       Caption = '&Command'
-      ClientHeight = 249
-      ClientWidth = 492
+      ClientHeight = 353
+      ClientWidth = 523
       object Directory_bind: TDirectoryEdit
-        Left = 86
+        Left = 118
         Height = 24
         Top = 44
-        Width = 371
+        Width = 370
         ShowHidden = False
         ButtonWidth = 23
         NumGlyphs = 1
@@ -33,18 +33,18 @@ object CommandForm: TCommandForm
         TabOrder = 1
       end
       object Command_bind: TMemo
-        Left = 86
-        Height = 144
-        Top = 100
-        Width = 371
+        Left = 118
+        Height = 224
+        Top = 124
+        Width = 370
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
           'Command_bind'
         )
-        TabOrder = 3
+        TabOrder = 4
       end
       object lblDirectory: TLabel
-        Left = 16
+        Left = 48
         Height = 18
         Top = 44
         Width = 54
@@ -52,25 +52,25 @@ object CommandForm: TCommandForm
         ParentColor = False
       end
       object lblCommand: TLabel
-        Left = 12
+        Left = 44
         Height = 18
-        Top = 100
+        Top = 124
         Width = 58
         Caption = 'Command'
         ParentColor = False
       end
       object EnvVariableTemplate_bind: TComboBox
-        Left = 86
+        Left = 118
         Height = 24
         Top = 73
-        Width = 371
+        Width = 370
         Anchors = [akTop, akLeft, akRight]
         ItemHeight = 0
         TabOrder = 2
         Text = 'EnvVariableTemplate_bind'
       end
       object lblEnvVariableTemplate: TLabel
-        Left = 16
+        Left = 48
         Height = 18
         Top = 73
         Width = 54
@@ -78,27 +78,42 @@ object CommandForm: TCommandForm
         ParentColor = False
       end
       object Name_bind: TEdit
-        Left = 86
+        Left = 118
         Height = 24
         Top = 14
-        Width = 371
+        Width = 370
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
         Text = 'Name_bind'
       end
       object lblName: TLabel
-        Left = 36
+        Left = 68
         Height = 18
         Top = 14
         Width = 34
         Caption = 'Name'
         ParentColor = False
       end
+      object RunInTerminal_bind: TCheckBox
+        Left = 118
+        Height = 26
+        Top = 100
+        Width = 26
+        TabOrder = 3
+      end
+      object lblRunInTerminal: TLabel
+        Left = 18
+        Height = 18
+        Top = 100
+        Width = 84
+        Caption = 'RunInTerminal'
+        ParentColor = False
+      end
     end
     object tsParameters: TTabSheet
       Caption = '&Parameters'
-      ClientHeight = 249
-      ClientWidth = 492
+      ClientHeight = 353
+      ClientWidth = 523
       object Parameters_bind: TStringGrid
         Left = 0
         Height = 249
@@ -120,8 +135,8 @@ object CommandForm: TCommandForm
     end
     object tsEnvVariables: TTabSheet
       Caption = '&Environment variables'
-      ClientHeight = 249
-      ClientWidth = 492
+      ClientHeight = 353
+      ClientWidth = 523
       object EnvVariables_bind: TStringGrid
         Left = 0
         Height = 249
@@ -141,14 +156,14 @@ object CommandForm: TCommandForm
   object pnBottom: TPanel
     Left = 0
     Height = 36
-    Top = 289
-    Width = 500
+    Top = 393
+    Width = 531
     Align = alBottom
     ClientHeight = 36
-    ClientWidth = 500
+    ClientWidth = 531
     TabOrder = 1
     object btnOK: TBitBtn
-      Left = 232
+      Left = 263
       Height = 30
       Top = 2
       Width = 112
@@ -160,7 +175,7 @@ object CommandForm: TCommandForm
       TabOrder = 0
     end
     object btnCancel: TBitBtn
-      Left = 352
+      Left = 383
       Height = 30
       Top = 2
       Width = 112

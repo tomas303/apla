@@ -69,6 +69,7 @@ type
     fEnvVariables: TEnvVariables;
     fParameters: TParameters;
     fEnvVariableTemplate: TEnvVariableTemplate;
+    fRunInTerminal: Boolean;
     function GetCommand: string;
     function GetEnvVariables(AIndex: Integer; APropIndex: integer): TEnvVariable;
     function GetEnvVariablesCount(APropIndex: integer): integer;
@@ -104,6 +105,7 @@ type
     property Parameters[AIndex: integer]: TParameter index crbList + crbObject read GetParameters write SetParameters;
     property ParametersCount: integer index crbListCounter read GetParametersCount write SetParametersCount;
     property EnvVariableTemplate: TEnvVariableTemplate index crbObject + crbRef read GetEnvVariableTemplate write SetEnvVariableTemplate;
+    property RunInTerminal: Boolean read fRunInTerminal write fRunInTerminal;
   end;
 
 implementation
@@ -337,7 +339,8 @@ begin
     mProcess.ApplicationName := '';
     mProcess.Executable := Command;
     mProcess.CurrentDirectory := Directory;
-    //mProcess.Options := [poNewConsole];
+    if RunInTerminal then
+      mProcess.Options := mProcess.Options + [poNewConsole];
     mProcess.Execute;
   finally
     mProcess.Free;
