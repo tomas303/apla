@@ -11,9 +11,12 @@ uses
 
 type
 
+  ELauncher = class(Exception)
+  end;
+
   { TLauncherForm }
 
-  TCustomLaunchList = specialize TFPGMap<pointer, TCommand>;
+  TCustomLaunchList = specialize TFPGMap<pointer, TObject>;
 
   { TLaunchList }
 
@@ -35,6 +38,7 @@ type
     function CreateMenuItem(AParentMenu: TMenuItem; const ACaption: string;
       AOnClick: TNotifyEvent; ATag: integer = 0): TMenuItem;
     procedure OnRunCommandClick(Sender: TObject);
+    procedure OnRunAllCategoryClick(Sender: TObject);
     procedure OnCloseApplicationClick(Sender: TObject);
     procedure OnManageCommandsClick(Sender: TObject);
     procedure OnManageCategoriesClick(Sender: TObject);
@@ -45,6 +49,7 @@ type
     procedure AddAllCommnads(AParentMenu: TMenuItem);
     procedure AddAllCategories(AParentMenu: TMenuItem);
     procedure AddCategoryCommnads(const ACategory: TCategory; AParentMenu: TMenuItem);
+    procedure AddRunAllCategoryCommnad(const ACategory: TCategory; AParentMenu: TMenuItem);
     procedure RebuildMenu(const ARootMenu: TMenuItem);
     procedure ReloadCommands;
     procedure Rebuild;
@@ -81,11 +86,35 @@ end;
 
 procedure TLauncherForm.OnRunCommandClick(Sender: TObject);
 var
-  mCommand: TCommand;
+  mCommand: TObject;
 begin
   mCommand := fLaunchList.KeyData[Sender];
-  if mCommand <> nil then
-    mCommand.Run;
+  if mCommand = nil then
+    Exit;
+  if not (mCommand is TCommand) then
+    raise ELauncher.Create('Object is not TCommand');
+  (mCommand as TCommand).Run;
+end;
+
+procedure TLauncherForm.OnRunAllCategoryClick(Sender: TObject);
+var
+  mO: TObject;
+  mCategory: TCategory;
+  i: integer;
+begin
+  mO := fLaunchList.KeyData[Sender];
+  if mO = nil then
+    Exit;
+  if not (mO is TCategory) then
+    raise ELauncher.Create('Object is not TCategory');
+  mCategory := mO as TCategory;
+  for i := 0 to mCategory.CommandsCount - 1 do
+  begin
+    try
+      mCategory.Commands[i].Run;
+    except
+    end;
+  end;
 end;
 
 procedure TLauncherForm.OnCloseApplicationClick(Sender: TObject);
@@ -166,6 +195,9 @@ var
   mItem: TMenuItem;
   mCommand: TCommand;
 begin
+  if ACategory.CommandsCount = 0 then
+    Exit;
+  AddRunAllCategoryCommnad(ACategory, AParentMenu);
   for i := 0 to ACategory.CommandsCount - 1 do
   begin
     mItem := TMenuItem.Create(mnMain);
@@ -175,6 +207,19 @@ begin
     AParentMenu.Add(mItem);
     fLaunchList.Add(mItem, mCommand);
   end;
+end;
+
+procedure TLauncherForm.AddRunAllCategoryCommnad(const ACategory: TCategory;
+  AParentMenu: TMenuItem);
+var
+  mItem: TMenuItem;
+begin
+  mItem := TMenuItem.Create(mnMain);
+  mItem.Caption := 'Run all ' + ACategory.Name;
+  mItem.OnClick := @OnRunAllCategoryClick;
+  AParentMenu.Add(mItem);
+  AddSeparator(AParentMenu);
+  fLaunchList.Add(mItem, ACategory);
 end;
 
 procedure TLauncherForm.RebuildMenu(const ARootMenu: TMenuItem);
