@@ -42,13 +42,13 @@
         <PackageName Value="MemDSLaz"/>
       </Item2>
       <Item3>
-        <PackageName Value="TvrRttiSerializer"/>
+        <PackageName Value="rtti_serializer"/>
       </Item3>
       <Item4>
-        <PackageName Value="TvrRttiIDEBinder"/>
+        <PackageName Value="rtti_idebinder"/>
       </Item4>
       <Item5>
-        <PackageName Value="TvrRttiBroker"/>
+        <PackageName Value="rtti_broker"/>
       </Item5>
       <Item6>
         <PackageName Value="LCL"/>

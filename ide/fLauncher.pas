@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ExtCtrls, iMain, tvr.rtti.broker.iBroker, uCommands, fCommands, fCategories,
+  ExtCtrls, iMain, rtti_broker_iBroker, uCommands, fCommands, fCategories,
   fgl, uCategories;
 
 type

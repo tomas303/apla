@@ -6,9 +6,9 @@ interface
 
 uses
   forms, sysutils, classes,
-  iMain, tvr.rtti.serializer.iManager, tvr.rtti.serializer.uXmlStore,
-  tvr.rtti.serializer.uFactory,
-  uCommands, uGroups, uCategories, tvr.rtti.broker.iBroker;
+  iMain, rtti_serializer_iManager, rtti_serializer_uXmlStore,
+  rtti_serializer_uFactory,
+  uCommands, uGroups, uCategories, rtti_broker_iBroker;
 
 type
 

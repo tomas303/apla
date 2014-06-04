@@ -5,7 +5,7 @@ unit uGroups;
 interface
 
 uses
-  sysutils, tvr.rtti.broker.iBroker, tvr.rtti.serializer.uSerialObject, fgl, uCommands;
+  sysutils, rtti_broker_iBroker, rtti_serializer_uSerialObject, fgl, uCommands;
 
 type
 
@@ -179,4 +179,4 @@ begin
 end;
 
 end.
-
+

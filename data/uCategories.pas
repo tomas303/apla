@@ -5,7 +5,7 @@ unit uCategories;
 interface
 
 uses
-  Classes, SysUtils, tvr.rtti.broker.iBroker, tvr.rtti.serializer.uSerialObject,
+  Classes, SysUtils, rtti_broker_iBroker, rtti_serializer_uSerialObject,
   fgl, uCommands;
 
 type

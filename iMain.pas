@@ -5,7 +5,7 @@ unit iMain;
 interface
 
 uses
-  tvr.rtti.serializer.iManager, tvr.rtti.broker.iBroker;
+  rtti_serializer_iManager, rtti_broker_iBroker;
 
 type
 

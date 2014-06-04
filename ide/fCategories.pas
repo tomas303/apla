@@ -7,9 +7,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Grids, ExtCtrls, iMain, fCategory,
-  tvr.rtti.broker.iBroker,
-  tvr.rtti.idebinder.Lib,
-  tvr.rtti.idebinder.iBindings, types;
+  rtti_broker_iBroker,
+  rtti_idebinder_Lib,
+  rtti_idebinder_iBindings, types;
 
 type
 

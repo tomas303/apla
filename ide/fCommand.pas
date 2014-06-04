@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  EditBtn, StdCtrls, Buttons, Grids, ComCtrls, tvr.rtti.broker.iBroker,
-  tvr.rtti.idebinder.iBindings, tvr.rtti.idebinder.Lib, types;
+  EditBtn, StdCtrls, Buttons, Grids, ComCtrls, rtti_broker_iBroker,
+  rtti_idebinder_iBindings, rtti_idebinder_Lib, types;
 
 type
 

@@ -5,7 +5,7 @@ unit uCommands;
 interface
 
 uses
-  sysutils, tvr.rtti.broker.iBroker, tvr.rtti.serializer.uSerialObject, fgl, process;
+  sysutils, rtti_broker_iBroker, rtti_serializer_uSerialObject, fgl, process;
 
 type
 
@@ -348,4 +348,4 @@ begin
 end;
 
 end.
-
+
