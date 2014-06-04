@@ -12,7 +12,7 @@ type
 
   { TCategory }
 
-  TCategory = class(TRBCustomIDObject)
+  TCategory = class(TRBCustomObject)
   private type
     TCommands = TFPGObjectList<TCommand>;
   private

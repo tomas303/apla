@@ -46,7 +46,7 @@ type
 
   { TGroup }
 
-  TGroup = class(TRBCustomIDObject)
+  TGroup = class(TRBCustomObject)
   private
     fName: string;
     fRoot: TGroupItem;

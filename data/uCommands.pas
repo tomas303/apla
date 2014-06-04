@@ -34,7 +34,7 @@ type
 
   { TEnvVariableTemplate }
 
-  TEnvVariableTemplate = class(TRBCustomIDObject)
+  TEnvVariableTemplate = class(TRBCustomObject)
   private type
     TEnvVariables = TFPGObjectList<TEnvVariable>;
   private
@@ -58,7 +58,7 @@ type
 
   { TCommand }
 
-  TCommand = class(TRBCustomIDObject)
+  TCommand = class(TRBCustomObject)
   private type
     TEnvVariables = TFPGObjectList<TEnvVariable>;
     TParameters = TFPGObjectList<TParameter>;
