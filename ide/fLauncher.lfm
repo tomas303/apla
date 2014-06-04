@@ -1,8 +1,8 @@
 object LauncherForm: TLauncherForm
   Left = 459
-  Height = 240
+  Height = 237
   Top = 175
-  Width = 320
+  Width = 316
   Caption = 'Form1'
   Menu = mnMain
   LCLVersion = '1.3'
