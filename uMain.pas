@@ -11,6 +11,9 @@ uses
   uCommands, uGroups, uCategories, rtti_broker_iBroker;
 
 type
+   EMain = class(Exception)
+
+   end;
 
   { TMain }
 
@@ -25,6 +28,9 @@ type
     function GetSerialFactory: ISerialFactory;
     function GetDataQuery: IRBDataQuery;
   protected
+    function PrepareHomeDir(const AHomeSubdir: string): string;
+    function OpenDataStore(const AFile: string; ACanCreate: Boolean): Boolean;
+    procedure InitData;
     procedure StartUp;
     procedure ShutDown;
     procedure Go(const AFormClass: TFormClass);
@@ -54,10 +60,46 @@ begin
   Result := fDataStore as IRBDataQuery;
 end;
 
-procedure TMain.StartUp;
+function TMain.PrepareHomeDir(const AHomeSubdir: string): string;
+begin
+{$IFDEF UNIX}
+  Result := GetEnvironmentVariable('HOME') + PathDelim + AHomeSubdir + PathDelim;
+{$ENDIF UNIX}
+{$IFDEF WINDOWS}
+  Result := GetEnvironmentVariable('APPDATA') + PathDelim + AHomeSubdir + PathDelim;
+{$ENDIF WINDOWS}
+  if not DirectoryExists(Result) then
+  begin
+    if not ForceDirectories(Result) then
+      raise EMain('Cannot create directory ' + Result);
+  end;
+end;
+
+function TMain.OpenDataStore(const AFile: string; ACanCreate: Boolean): Boolean;
+begin
+  Result := False;
+  if FileExists(AFile) or ACanCreate then
+  begin
+    fDataStore := TXmlStore.Create(fSerialFactory, AFile);
+    Result := True;
+  end;
+end;
+
+procedure TMain.InitData;
+var
+  mHomeDataFile: string;
 begin
   fSerialFactory := TSerialFactory.Create;
-  fDataStore := TXmlStore.Create(fSerialFactory, './store/data.xml');
+  if OpenDataStore('./store/data.xml', False) then
+    Exit;
+  mHomeDataFile := PrepareHomeDir('.apla') + 'data.xml';
+  if not OpenDataStore(mHomeDataFile, True) then
+    raise EMain.Create('Cannot oper or create ' + mHomeDataFile);
+end;
+
+procedure TMain.StartUp;
+begin
+  InitData;
   fSerialFactory.RegisterClass(TCommand);
   fSerialFactory.RegisterClass(TEnvVariableTemplate);
   fSerialFactory.RegisterClass(TEnvVariable);
