@@ -16,6 +16,8 @@ type
   TCommandForm = class(TForm)
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
+    lblShowWindow: TLabel;
+    ShowWindow_bind: TComboBox;
     lblRunInTerminal: TLabel;
     RunInTerminal_bind: TCheckBox;
     lblName: TLabel;

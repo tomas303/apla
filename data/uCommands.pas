@@ -56,6 +56,9 @@ type
     property EnvVariablesCount: integer index crbListCounter read GetEnvVariablesCount write SetEnvVariablesCount;
   end;
 
+
+  TCommandShowWindow = (None,Maximize,Minimize);
+
   { TCommand }
 
   TCommand = class(TRBCustomObject)
@@ -70,6 +73,7 @@ type
     fParameters: TParameters;
     fEnvVariableTemplate: TEnvVariableTemplate;
     fRunInTerminal: Boolean;
+    fShowWindow: TCommandShowWindow;
     function GetCommand: string;
     function GetEnvVariables(AIndex: Integer; APropIndex: integer): TEnvVariable;
     function GetEnvVariablesCount(APropIndex: integer): integer;
@@ -106,6 +110,7 @@ type
     property ParametersCount: integer index crbListCounter read GetParametersCount write SetParametersCount;
     property EnvVariableTemplate: TEnvVariableTemplate index crbObject + crbRef read GetEnvVariableTemplate write SetEnvVariableTemplate;
     property RunInTerminal: Boolean read fRunInTerminal write fRunInTerminal;
+    property ShowWindow: TCommandShowWindow read fShowWindow write fShowWindow;
   end;
 
 implementation
@@ -339,6 +344,14 @@ begin
     mProcess.ApplicationName := '';
     mProcess.Executable := Command;
     mProcess.CurrentDirectory := Directory;
+    case ShowWindow of
+      TCommandShowWindow.None:
+        mProcess.ShowWindow := swoNone;
+      TCommandShowWindow.Maximize:
+        mProcess.ShowWindow := swoMaximize;
+      TCommandShowWindow.Minimize:
+      mProcess.ShowWindow := swoMinimize;
+    end;
     if RunInTerminal then
       mProcess.Options := mProcess.Options + [poNewConsole];
     mProcess.Execute;
@@ -348,4 +361,4 @@ begin
 end;
 
 end.
-
+

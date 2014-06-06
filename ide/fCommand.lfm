@@ -18,11 +18,11 @@ object CommandForm: TCommandForm
     TabOrder = 0
     object tsCommand: TTabSheet
       Caption = '&Command'
-      ClientHeight = 349
+      ClientHeight = 350
       ClientWidth = 519
       object Directory_bind: TDirectoryEdit
         Left = 118
-        Height = 25
+        Height = 24
         Top = 44
         Width = 366
         ShowHidden = False
@@ -34,34 +34,34 @@ object CommandForm: TCommandForm
       end
       object Command_bind: TMemo
         Left = 118
-        Height = 220
-        Top = 124
+        Height = 213
+        Top = 132
         Width = 366
         Anchors = [akTop, akLeft, akRight, akBottom]
         Lines.Strings = (
           'Command_bind'
         )
-        TabOrder = 4
+        TabOrder = 5
       end
       object lblDirectory: TLabel
         Left = 48
-        Height = 19
+        Height = 18
         Top = 44
-        Width = 59
+        Width = 54
         Caption = 'Directory'
         ParentColor = False
       end
       object lblCommand: TLabel
         Left = 44
-        Height = 19
-        Top = 124
-        Width = 65
+        Height = 18
+        Top = 132
+        Width = 58
         Caption = 'Command'
         ParentColor = False
       end
       object EnvVariableTemplate_bind: TComboBox
         Left = 118
-        Height = 25
+        Height = 24
         Top = 73
         Width = 366
         Anchors = [akTop, akLeft, akRight]
@@ -71,15 +71,15 @@ object CommandForm: TCommandForm
       end
       object lblEnvVariableTemplate: TLabel
         Left = 48
-        Height = 19
+        Height = 18
         Top = 73
-        Width = 58
+        Width = 54
         Caption = 'Template'
         ParentColor = False
       end
       object Name_bind: TEdit
         Left = 118
-        Height = 25
+        Height = 24
         Top = 14
         Width = 366
         Anchors = [akTop, akLeft, akRight]
@@ -88,9 +88,9 @@ object CommandForm: TCommandForm
       end
       object lblName: TLabel
         Left = 68
-        Height = 19
+        Height = 18
         Top = 14
-        Width = 36
+        Width = 34
         Caption = 'Name'
         ParentColor = False
       end
@@ -103,16 +103,34 @@ object CommandForm: TCommandForm
       end
       object lblRunInTerminal: TLabel
         Left = 18
-        Height = 19
+        Height = 18
         Top = 100
-        Width = 93
+        Width = 84
         Caption = 'RunInTerminal'
+        ParentColor = False
+      end
+      object ShowWindow_bind: TComboBox
+        Left = 268
+        Height = 24
+        Top = 100
+        Width = 216
+        Anchors = [akTop, akLeft, akRight]
+        ItemHeight = 0
+        TabOrder = 4
+        Text = 'ShowWindow_bind'
+      end
+      object lblShowWindow: TLabel
+        Left = 188
+        Height = 18
+        Top = 100
+        Width = 75
+        Caption = 'ShowWindow'
         ParentColor = False
       end
     end
     object tsParameters: TTabSheet
       Caption = '&Parameters'
-      ClientHeight = 349
+      ClientHeight = 350
       ClientWidth = 519
       object Parameters_bind: TStringGrid
         Left = 0
@@ -135,7 +153,7 @@ object CommandForm: TCommandForm
     end
     object tsEnvVariables: TTabSheet
       Caption = '&Environment variables'
-      ClientHeight = 349
+      ClientHeight = 350
       ClientWidth = 519
       object EnvVariables_bind: TStringGrid
         Left = 0
