@@ -29,12 +29,13 @@ type
   private
     fContext: IMainContext;
     fBinder: IRBTallyBinder;
+    fDirty: Boolean;
     procedure RunCommand(const AData: IRBData);
   protected
     procedure ActualizeRunTab;
   public
     procedure AttachMainContext(const AContext: IMainContext);
-    class procedure Edit(const AContext: IMainContext);
+    class function Edit(const AContext: IMainContext): Boolean;
   end;
 
 var
@@ -55,6 +56,7 @@ begin
   begin
     fContext.DataStore.Save(mData);
     fContext.DataStore.Flush;
+    fDirty := True;
     ActualizeRunTab;
   end;
 end;
@@ -78,6 +80,7 @@ begin
     mData.Assign(mNewData);
     fContext.DataStore.Save(mData);
     fContext.DataStore.Flush;
+    fDirty := True;
     ActualizeRunTab;
   end;
 end;
@@ -110,7 +113,7 @@ begin
   ActualizeRunTab;
 end;
 
-class procedure TCommandsForm.Edit(const AContext: IMainContext);
+class function TCommandsForm.Edit(const AContext: IMainContext): Boolean;
 var
   m: TCommandsForm;
 begin
@@ -119,6 +122,7 @@ begin
      if Supports(m, IMainContextSupport) then
        (m as IMainContextSupport).AttachMainContext(AContext);
     m.ShowModal;
+    Result := m.fDirty;
   finally
     m.Release;
   end;

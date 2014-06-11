@@ -125,12 +125,14 @@ end;
 
 procedure TLauncherForm.OnManageCommandsClick(Sender: TObject);
 begin
-  TCommandsForm.Edit(fContext);
+  if TCommandsForm.Edit(fContext) then
+    Rebuild;
 end;
 
 procedure TLauncherForm.OnManageCategoriesClick(Sender: TObject);
 begin
-  TCategoriesForm.Edit(fContext);
+  if TCategoriesForm.Edit(fContext) then
+    Rebuild;
 end;
 
 procedure TLauncherForm.AddCloseApplication(AParentMenu: TMenuItem);

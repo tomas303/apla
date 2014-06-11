@@ -27,11 +27,12 @@ type
   private
     fContext: IMainContext;
     fBinder: IRBTallyBinder;
+    fDirty: Boolean;
   protected
     procedure Actualize;
   public
     procedure AttachMainContext(const AContext: IMainContext);
-    class procedure Edit(const AContext: IMainContext);
+    class function Edit(const AContext: IMainContext): Boolean;
   end;
 
 implementation
@@ -49,6 +50,7 @@ begin
   begin
     fContext.DataStore.Save(mData);
     fContext.DataStore.Flush;
+    fDirty := True;
     Actualize;
   end;
 end;
@@ -72,6 +74,7 @@ begin
     mData.Assign(mNewData);
     fContext.DataStore.Save(mData);
     fContext.DataStore.Flush;
+    fDirty := True;
     Actualize;
   end;
 end;
@@ -91,7 +94,7 @@ begin
   Actualize;
 end;
 
-class procedure TCategoriesForm.Edit(const AContext: IMainContext);
+class function TCategoriesForm.Edit(const AContext: IMainContext): Boolean;
 var
   m: TCategoriesForm;
 begin
@@ -100,6 +103,7 @@ begin
      if Supports(m, IMainContextSupport) then
        (m as IMainContextSupport).AttachMainContext(AContext);
     m.ShowModal;
+    Result := m.fDirty;
   finally
     m.Release;
   end;
