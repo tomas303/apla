@@ -37,6 +37,7 @@ type
     tsCommand: TTabSheet;
   private
     fBinder: IRBDataBinder;
+    fBehaveBinder: IRBBehavioralBinder;
   public
     procedure Init(const AData: IRBdata; const ADataQuery: IRBDataQuery);
     class function Edit(const AData: IRBdata; const ADataQuery: IRBDataQuery): Boolean;
@@ -53,6 +54,8 @@ implementation
 
 procedure TCommandForm.Init(const AData: IRBdata; const ADataQuery: IRBDataQuery);
 begin
+  fBehaveBinder := TLib.NewBehavioralBinder;
+  fBehaveBinder.Bind(Self);
   fBinder := TLib.NewDataBinder;
   fBinder.Bind(Self, AData, ADataQuery);
 end;
