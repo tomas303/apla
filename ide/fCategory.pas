@@ -17,6 +17,8 @@ type
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
     Favorite_bind: TCheckBox;
+    RunAll_bind: TCheckBox;
+    RunAllFavorite_bind: TCheckBox;
     Name_bind: TLabeledEdit;
     pnDetail: TPanel;
     Commands_bind: TStringGrid;
