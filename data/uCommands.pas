@@ -5,14 +5,16 @@ unit uCommands;
 interface
 
 uses
-  sysutils, rtti_broker_iBroker, rtti_serializer_uSerialObject, fgl, process;
+  sysutils, fgl, process,
+  trl_irttibroker, trl_ifactory, trl_ipersist, trl_ipersiststore,
+  trl_upersist, trl_upersiststore;
 
 type
 
   { TEnvVariable }
   TEnvVariableAppend = (Replace, Before, After);
 
-  TEnvVariable = class(TRBCustomObject)
+  TEnvVariable = class
   private
     fName: string;
     fValue: string;
@@ -23,37 +25,50 @@ type
     property Append: TEnvVariableAppend read fAppend write fAppend;
   end;
 
+  { IPersistManyTEnvVariable }
+
+  IPersistManyTEnvVariable = interface(IPersistMany<TEnvVariable>)
+  ['{E3912562-64E4-48FF-A7A4-7D8B284E167C}']
+  end;
+
+  { TPersistManyTEnvVariable }
+
+  TPersistManyTEnvVariable = class(TPersistManyObjects<TEnvVariable>, IPersistManyTEnvVariable)
+  end;
+
   { TParameter }
 
-  TParameter = class(TRBCustomObject)
+  TParameter = class
   private
     fValue: string;
   published
     property Value: string read fValue write fValue;
   end;
 
+  { IPersistManyTParameter }
+
+  IPersistManyTParameter = interface(IPersistMany<TParameter>)
+  ['{FC59552C-425C-46CD-9E4D-3FBFA6395DAC}']
+  end;
+
+  { TPersistManyTParameter }
+
+  TPersistManyTParameter = class(TPersistManyObjects<TParameter>, IPersistManyTParameter)
+  end;
+
   { TEnvVariableTemplate }
 
-  TEnvVariableTemplate = class(TRBCustomObject)
+  TEnvVariableTemplate = class
   private type
     TEnvVariables = TFPGObjectList<TEnvVariable>;
   private
     fName: string;
-    fEnvVariables: TEnvVariables;
-    function GetEnvVariables(AIndex: Integer; APropIndex: integer): TEnvVariable;
-    function GetEnvVariablesCount(AIndex: Integer): integer;
-    function GetName: string;
-    procedure SetEnvVariables(AIndex: Integer; APropIndex: integer;
-      AValue: TEnvVariable);
-    procedure SetEnvVariablesCount(AIndex: Integer; AValue: integer);
-    procedure SetName(AValue: string);
+    fEnvVariables: IPersistManyTEnvVariable;
   public
     procedure AfterConstruction; override;
-    procedure BeforeDestruction; override;
   published
-    property Name: string read GetName write SetName;
-    property EnvVariables[AIndex: integer]: TEnvVariable index crbList + crbObject read GetEnvVariables write SetEnvVariables; default;
-    property EnvVariablesCount: integer index crbListCounter read GetEnvVariablesCount write SetEnvVariablesCount;
+    property Name: string read fName write fName;
+    property EnvVariables: IPersistManyTEnvVariable read fEnvVariables;
   end;
 
 
@@ -61,7 +76,7 @@ type
 
   { TCommand }
 
-  TCommand = class(TRBCustomObject)
+  TCommand = class
   private type
     TEnvVariables = TFPGObjectList<TEnvVariable>;
     TParameters = TFPGObjectList<TParameter>;
@@ -69,46 +84,24 @@ type
     fCommand: string;
     fName: string;
     fDirectory: string;
-    fEnvVariables: TEnvVariables;
-    fParameters: TParameters;
-    fEnvVariableTemplate: TEnvVariableTemplate;
+    fEnvVariables: IPersistManyTEnvVariable;
+    fParameters: IPersistManyTParameter;
+    fEnvVariableTemplate: IPersistRef<TEnvVariableTemplate>;
     fRunInTerminal: Boolean;
     fShowWindow: TCommandShowWindow;
-    function GetCommand: string;
-    function GetEnvVariables(AIndex: Integer; APropIndex: integer): TEnvVariable;
-    function GetEnvVariablesCount(APropIndex: integer): integer;
-    function GetName: string;
-    function GetDirectory: string;
-    function GetParameters(AIndex: Integer; APropIndex: integer): TParameter;
-    function GetParametersCount(APropIndex: integer): integer;
-    function GetEnvVariableTemplate(AIndex: Integer): TEnvVariableTemplate;
-    procedure SetCommand(const AValue: string);
-    procedure SetEnvVariablesCount(APropIndex: integer; AValue: integer);
-    procedure SetName(AValue: string);
-    procedure SetDirectory(AValue: string);
-    procedure SetParametersCount(APropIndex: integer; AValue: integer);
-    procedure SetEnvVariableTemplate(AIndex: Integer;
-      AValue: TEnvVariableTemplate);
   private
     procedure ProcessFillEnvVariables(AProcess: TProcess; ACopyActual: Boolean);
     procedure ProcessFillParameters(AProcess: TProcess);
-    procedure SetEnvVariables(AIndex: Integer; APropIndex: integer;
-      AValue: TEnvVariable);
-    procedure SetParameters(AIndex: Integer; APropIndex: integer; AValue: TParameter
-      );
   public
     procedure AfterConstruction; override;
-    procedure BeforeDestruction; override;
     procedure Run;
   published
-    property Command: string read GetCommand write SetCommand;
-    property Name: string read GetName write SetName;
-    property Directory: string read GetDirectory write SetDirectory;
-    property EnvVariables[AIndex: integer]: TEnvVariable index crbList + crbObject read GetEnvVariables write SetEnvVariables;
-    property EnvVariablesCount: integer index crbListCounter read GetEnvVariablesCount write SetEnvVariablesCount;
-    property Parameters[AIndex: integer]: TParameter index crbList + crbObject read GetParameters write SetParameters;
-    property ParametersCount: integer index crbListCounter read GetParametersCount write SetParametersCount;
-    property EnvVariableTemplate: TEnvVariableTemplate index crbObject + crbRef read GetEnvVariableTemplate write SetEnvVariableTemplate;
+    property Command: string read fCommand write fCommand;
+    property Name: string read fName write fName;
+    property Directory: string read fDirectory write fDirectory;
+    property EnvVariables: IPersistManyTEnvVariable read fEnvVariables;
+    property Parameters: IPersistManyTParameter read fParameters;
+    property EnvVariableTemplate: IPersistRef<TEnvVariableTemplate> read fEnvVariableTemplate write fEnvVariableTemplate;
     property RunInTerminal: Boolean read fRunInTerminal write fRunInTerminal;
     property ShowWindow: TCommandShowWindow read fShowWindow write fShowWindow;
   end;
@@ -117,106 +110,13 @@ implementation
 
 { TEnvVariableTemplate }
 
-function TEnvVariableTemplate.GetEnvVariables(AIndex: Integer; APropIndex: integer
-  ): TEnvVariable;
-begin
-  if fEnvVariables[AIndex] = nil then
-    fEnvVariables[AIndex] := TEnvVariable.Create;
-  Result := fEnvVariables[AIndex];
-end;
-
-function TEnvVariableTemplate.GetEnvVariablesCount(AIndex: Integer): integer;
-begin
-  Result := fEnvVariables.Count;
-end;
-
-function TEnvVariableTemplate.GetName: string;
-begin
-  Result := fName;
-end;
-
-procedure TEnvVariableTemplate.SetEnvVariables(AIndex: Integer;
-  APropIndex: integer; AValue: TEnvVariable);
-begin
-  if fEnvVariables[AIndex] <> nil then
-    fEnvVariables[AIndex].Free;
-  fEnvVariables[AIndex] := AValue;
-end;
-
-procedure TEnvVariableTemplate.SetEnvVariablesCount(AIndex: Integer;
-  AValue: integer);
-begin
-  fEnvVariables.Count := AValue;
-end;
-
-procedure TEnvVariableTemplate.SetName(AValue: string);
-begin
-  fName := AValue;
-end;
-
 procedure TEnvVariableTemplate.AfterConstruction;
 begin
   inherited AfterConstruction;
-  fEnvVariables := TEnvVariables.Create;
-end;
-
-procedure TEnvVariableTemplate.BeforeDestruction;
-begin
-  FreeAndNil(fEnvVariables);
-  inherited BeforeDestruction;
+  fEnvVariables := TPersistManyTEnvVariable.Create;
 end;
 
 { TCommand }
-
-function TCommand.GetEnvVariables(AIndex: Integer; APropIndex: integer
-  ): TEnvVariable;
-begin
-  if fEnvVariables[AIndex] = nil then
-    fEnvVariables[AIndex] := TEnvVariable.Create;
-  Result := fEnvVariables[AIndex];
-end;
-
-function TCommand.GetCommand: string;
-begin
-  Result := fCommand;
-end;
-
-function TCommand.GetEnvVariablesCount(APropIndex: integer): integer;
-begin
-  Result := fEnvVariables.Count;
-end;
-
-function TCommand.GetName: string;
-begin
-  Result := fName;
-end;
-
-procedure TCommand.SetCommand(const AValue: string);
-begin
-  fCommand := AValue;
-end;
-
-procedure TCommand.SetEnvVariablesCount(APropIndex: integer; AValue: integer);
-begin
-  fEnvVariables.Count := AValue;
-end;
-
-procedure TCommand.SetName(AValue: string);
-begin
-  fName := AValue;
-end;
-
-function TCommand.GetParameters(AIndex: Integer; APropIndex: integer): TParameter;
-begin
-  if fParameters[AIndex] = nil then
-    fParameters[AIndex] := TParameter.Create;
-  Result := fParameters[AIndex];
-end;
-
-function TCommand.GetParametersCount(APropIndex: integer): integer;
-begin
-  Result := fParameters.Count;
-end;
 
 procedure TCommand.ProcessFillEnvVariables(AProcess: TProcess; ACopyActual: Boolean);
 var
@@ -251,15 +151,15 @@ begin
       AProcess.Environment.Add(GetEnvironmentString(i));
     end;
   end;
-  if EnvVariableTemplate <> nil then
+  if (EnvVariableTemplate <> nil) and (EnvVariableTemplate.Data <> nil) then
   begin
-    for i := 0 to EnvVariableTemplate.EnvVariablesCount - 1 do
+    for i := 0 to EnvVariableTemplate.Item.EnvVariables.Count - 1 do
     begin
       //AProcess.Environment.Add(EnvVariableTemplate[i].Name + '=' + EnvVariableTemplate[i].Value);
-      iAdd(EnvVariableTemplate[i]);
+      iAdd(EnvVariableTemplate.Item.EnvVariables[i]);
     end;
   end;
-  for i := 0 to EnvVariablesCount - 1 do
+  for i := 0 to EnvVariables.Count - 1 do
   begin
     //AProcess.Environment.Add(EnvVariables[i].Name + '=' + EnvVariables[i].Value);
     m1 := EnvVariables[i].Name;
@@ -272,65 +172,17 @@ procedure TCommand.ProcessFillParameters(AProcess: TProcess);
 var
   i: integer;
 begin
-  for i := 0 to ParametersCount - 1 do
+  for i := 0 to Parameters.Count - 1 do
   begin
     AProcess.Parameters.Add(Parameters[i].Value);
   end;
 end;
 
-procedure TCommand.SetEnvVariables(AIndex: Integer; APropIndex: integer;
-  AValue: TEnvVariable);
-begin
-  if fEnvVariables[AIndex] <> nil then
-    fEnvVariables[AIndex].Free;
-  fEnvVariables[AIndex] := AValue;
-end;
-
-procedure TCommand.SetEnvVariableTemplate(AIndex: Integer;
-  AValue: TEnvVariableTemplate);
-begin
-  fEnvVariableTemplate := AValue;
-end;
-
-procedure TCommand.SetParameters(AIndex: Integer; APropIndex: integer;
-  AValue: TParameter);
-begin
-  if fParameters[AIndex] <> nil then
-    fParameters[AIndex].Free;
-  fParameters[AIndex] := AValue;
-end;
-
 procedure TCommand.AfterConstruction;
 begin
-  fEnvVariables := TEnvVariables.Create;
-  fParameters := TParameters.Create;
-end;
-
-procedure TCommand.BeforeDestruction;
-begin
-  FreeAndNil(fEnvVariables);
-  FreeAndNil(fParameters);
-  inherited BeforeDestruction;
-end;
-
-procedure TCommand.SetDirectory(AValue: string);
-begin
-  fDirectory := AValue;
-end;
-
-procedure TCommand.SetParametersCount(APropIndex: integer; AValue: integer);
-begin
-  fParameters.Count := AValue;
-end;
-
-function TCommand.GetEnvVariableTemplate(AIndex: Integer): TEnvVariableTemplate;
-begin
-  Result := fEnvVariableTemplate;
-end;
-
-function TCommand.GetDirectory: string;
-begin
-  Result := fDirectory;
+  fEnvVariables := TPersistManyTEnvVariable.Create;
+  fParameters := TPersistManyTParameter.Create;
+  fEnvVariableTemplate := TPersistRef<TEnvVariableTemplate>.Create;
 end;
 
 procedure TCommand.Run;
@@ -361,4 +213,4 @@ begin
 end;
 
 end.
-
+

@@ -6,15 +6,16 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, ExtCtrls, Grids, Buttons, Menus, iMain, rtti_broker_iBroker,
-  uCommands, fCommand, rtti_idebinder_Lib, rtti_idebinder_iBindings,
-  types;
+  StdCtrls, ExtCtrls, Grids, Buttons, Menus,
+  uCommands, fCommand, types,
+  trl_irttibroker, trl_ifactory, trl_ipersist, trl_ipersiststore,
+  tvl_iedit, tvl_ibindings;
 
 type
 
   { TCommandsForm }
 
-  TCommandsForm = class(TForm, IMainContextSupport)
+  TCommandsForm = class(TForm, IListData)
     btnAdd: TButton;
     btnDelete: TButton;
     btnEdit: TButton;
@@ -27,19 +28,21 @@ type
     procedure grdCommandsKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
-    fContext: IMainContext;
+    fFactory: IPersistFactory;
+    fStore: IPersistStore;
     fBinder: IRBTallyBinder;
-    fDirty: Boolean;
+    fEdit: IEditData;
     procedure RunCommand(const AData: IRBData);
   protected
     procedure ActualizeRunTab;
   public
-    procedure AttachMainContext(const AContext: IMainContext);
-    class function Edit(const AContext: IMainContext): Boolean;
+    procedure List;
+  published
+    property Factory: IPersistFactory read fFactory write fFactory;
+    property Store: IPersistStore read fStore write fStore;
+    property Binder: IRBTallyBinder read fBinder write fBinder;
+    property Edit: IEditData read fEdit write fEdit;
   end;
-
-var
-  LauncherForm: TCommandsForm;
 
 implementation
 
@@ -51,36 +54,36 @@ procedure TCommandsForm.btnAddClick(Sender: TObject);
 var
   mData: IRBData;
 begin
-  mData := fContext.SerialFactory.CreateObject('TCommand') as IRBData;
-  if TCommandForm.Edit(mData, fContext.DataQuery) then
+  mData := Factory.CreateObject('TCommand');
+  if Edit.Edit(mData) then
   begin
-    fContext.DataStore.Save(mData);
-    fContext.DataStore.Flush;
-    fDirty := True;
+    Store.Save(mData);
+    Store.Flush;
     ActualizeRunTab;
   end;
 end;
 
 procedure TCommandsForm.btnDeleteClick(Sender: TObject);
 begin
-  // mazat zatim serial vrstva neumi
+  Store.Delete(Binder.CurrentData);
+  Store.Flush;
+  ActualizeRunTab;
 end;
 
 procedure TCommandsForm.btnEditClick(Sender: TObject);
 var
   mData, mNewData: IRBData;
 begin
-  mData := fBinder.CurrentData;
+  mData := Binder.CurrentData;
   if mData = nil then
     Exit;
-  mNewData := fContext.SerialFactory.CreateObject('TCommand') as IRBData;
+  mNewData := Factory.CreateObject('TCommand');
   mNewData.Assign(mData);
-  if TCommandForm.Edit(mNewData, fContext.DataQuery) then
+  if Edit.Edit(mNewData) then
   begin
     mData.Assign(mNewData);
-    fContext.DataStore.Save(mData);
-    fContext.DataStore.Flush;
-    fDirty := True;
+    Store.Save(mData);
+    Store.Flush;
     ActualizeRunTab;
   end;
 end;
@@ -89,7 +92,7 @@ procedure TCommandsForm.grdCommandsKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = 13 then
-    RunCommand(fBinder.CurrentData);
+    RunCommand(Binder.CurrentData);
 end;
 
 procedure TCommandsForm.RunCommand(const AData: IRBData);
@@ -100,31 +103,18 @@ begin
 end;
 
 procedure TCommandsForm.ActualizeRunTab;
-var
-  mClass: TClass;
 begin
-  mClass := fContext.SerialFactory.FindClass('TCommand');
-  fBinder := TLib.NewListBinder(grdCommands, fContext.DataQuery, mClass);
+  Binder.Reload;
 end;
 
-procedure TCommandsForm.AttachMainContext(const AContext: IMainContext);
+procedure TCommandsForm.List;
 begin
-  fContext := AContext;
-  ActualizeRunTab;
-end;
-
-class function TCommandsForm.Edit(const AContext: IMainContext): Boolean;
-var
-  m: TCommandsForm;
-begin
-  Application.CreateForm(Self, m);
+  Binder.Bind(grdCommands, 'TCommand');
   try
-     if Supports(m, IMainContextSupport) then
-       (m as IMainContextSupport).AttachMainContext(AContext);
-    m.ShowModal;
-    Result := m.fDirty;
+    ActualizeRunTab;
+    ShowModal;
   finally
-    m.Release;
+    Binder.Unbind;
   end;
 end;
 

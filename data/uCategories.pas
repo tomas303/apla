@@ -5,33 +5,27 @@ unit uCategories;
 interface
 
 uses
-  Classes, SysUtils, rtti_broker_iBroker, rtti_serializer_uSerialObject,
-  fgl, uCommands;
+  Classes, SysUtils,
+  fgl, uCommands,
+  trl_irttibroker, trl_ifactory, trl_ipersist, trl_ipersiststore,
+  trl_upersist, trl_upersiststore;
 
 type
 
   { TCategory }
 
-  TCategory = class(TRBCustomObject)
-  private type
-    TCommands = TFPGObjectList<TCommand>;
+  TCategory = class
   private
     fName: string;
-    fCommands: TCommands;
+    fCommands: IPersistManyRefs<TCommand>;
     fFavorite: Boolean;
     fRunAll: Boolean;
     fRunAllFavorite: Boolean;
-    function GetCommands(AIndex: Integer; APropIndex: integer): TCommand;
-    function GetCommandsCount(AIndex: Integer): integer;
-    procedure SetCommands(AIndex: Integer; APropIndex: integer; AValue: TCommand);
-    procedure SetCommandsCount(AIndex: Integer; AValue: integer);
   public
     procedure AfterConstruction; override;
-    procedure BeforeDestruction; override;
   published
     property Name: string read fName write fName;
-    property Commands[AIndex: integer]: TCommand index crbList + crbObject + crbRef read GetCommands write SetCommands; default;
-    property CommandsCount: integer index crbListCounter read GetCommandsCount write SetCommandsCount;
+    property Commands: IPersistManyRefs<TCommand> read fCommands;
     property Favorite: Boolean read fFavorite write fFavorite;
     property RunAll: Boolean read fRunAll write fRunAll;
     property RunAllFavorite: Boolean read fRunAllFavorite write fRunAllFavorite;
@@ -41,37 +35,10 @@ implementation
 
 { TCategory }
 
-function TCategory.GetCommands(AIndex: Integer; APropIndex: integer): TCommand;
-begin
-  Result := fCommands[AIndex];
-end;
-
-function TCategory.GetCommandsCount(AIndex: Integer): integer;
-begin
-  Result := fCommands.Count;
-end;
-
-procedure TCategory.SetCommands(AIndex: Integer; APropIndex: integer;
-  AValue: TCommand);
-begin
-  fCommands[AIndex] := AValue;;
-end;
-
-procedure TCategory.SetCommandsCount(AIndex: Integer; AValue: integer);
-begin
-  fCommands.Count := AValue;
-end;
-
 procedure TCategory.AfterConstruction;
 begin
   inherited AfterConstruction;
-  fCommands := TCommands.Create(False);
-end;
-
-procedure TCategory.BeforeDestruction;
-begin
-  FreeAndNil(fCommands);
-  inherited BeforeDestruction;
+  fCommands := TPersistManyRefs<TCommand>.Create;
 end;
 
 end.

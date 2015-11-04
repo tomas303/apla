@@ -6,8 +6,10 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ExtCtrls, iMain, rtti_broker_iBroker, uCommands, fCommands, fCategories,
-  fgl, uCategories;
+  ExtCtrls, uCommands, fCommands, fCategories,
+  fgl, uCategories,
+  trl_irttibroker, trl_ifactory, trl_ipersist, trl_ipersiststore,
+  tvl_iedit, tvl_ibindings;
 
 type
 
@@ -23,7 +25,8 @@ type
   TLaunchList = class(TCustomLaunchList)
   end;
 
-  TLauncherForm = class(TForm, IMainContextSupport)
+  TLauncherForm = class(TForm)
+    MenuItem4: TMenuItem;
     mnMain: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
@@ -31,8 +34,11 @@ type
     pmLaunch: TPopupMenu;
     tiLaunch: TTrayIcon;
   private
-    fContext: IMainContext;
-    fRunList: IRBDataList;
+    fCategories: IListData;
+    fCommands: IListData;
+    fFactory: IPersistFactory;
+    fStore: IPersistStore;
+    fRunList: IPersistRefList;
     fLaunchList: TLaunchList;
   protected
     function CreateMenuItem(AParentMenu: TMenuItem; const ACaption: string;
@@ -53,13 +59,16 @@ type
     procedure AddRunAllCategoryCommnad(const ACategory: TCategory; AParentMenu: TMenuItem);
     procedure RebuildMenu(const ARootMenu: TMenuItem);
     procedure ReloadCommands;
-    procedure Rebuild;
-  protected
-    procedure AttachMainContext(const AContext: IMainContext);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-end;
+    procedure Rebuild;
+  published
+    property Factory: IPersistFactory read fFactory write fFactory;
+    property Store: IPersistStore read fStore write fStore;
+    property Commands: IListData read fCommands write fCommands;
+    property Categories: IListData read fCategories write fCategories;
+  end;
 
 var
   LauncherForm: TLauncherForm;
@@ -109,10 +118,10 @@ begin
   if not (mO is TCategory) then
     raise ELauncher.Create('Object is not TCategory');
   mCategory := mO as TCategory;
-  for i := 0 to mCategory.CommandsCount - 1 do
+  for i := 0 to mCategory.Commands.Count - 1 do
   begin
     try
-      mCategory.Commands[i].Run;
+      (mCategory.Commands[i].Data.UnderObject as TCommand).Run;
     except
     end;
   end;
@@ -125,14 +134,14 @@ end;
 
 procedure TLauncherForm.OnManageCommandsClick(Sender: TObject);
 begin
-  if TCommandsForm.Edit(fContext) then
-    Rebuild;
+  Commands.List;
+  Rebuild;
 end;
 
 procedure TLauncherForm.OnManageCategoriesClick(Sender: TObject);
 begin
-  if TCategoriesForm.Edit(fContext) then
-    Rebuild;
+  Categories.List;
+  Rebuild;
 end;
 
 procedure TLauncherForm.AddCloseApplication(AParentMenu: TMenuItem);
@@ -163,10 +172,10 @@ begin
   for i := 0 to fRunList.Count - 1 do
   begin
     mItem := TMenuItem.Create(mnMain);
-    mItem.Caption := fRunList.AsData[i].ItemByName['Name'].AsString;
+    mItem.Caption := fRunList[i].Data.ItemByName['Name'].AsString;
     mItem.OnClick := @OnRunCommandClick;
     AParentMenu.Add(mItem);
-    fLaunchList.Add(mItem, fRunList[i] as TCommand);
+    fLaunchList.Add(mItem, fRunList[i].Data.UnderObject as TCommand);
   end;
 end;
 
@@ -174,14 +183,14 @@ procedure TLauncherForm.AddNonFavoriteCategories(AParentMenu: TMenuItem);
 var
   i: integer;
   mItem: TMenuItem;
-  mList: IRBDataList;
+  mList: IPersistRefList;
   mCategory: TCategory;
 begin
-  mList := fContext.DataStore.LoadList('TCategory');
+  mList := (Store as IPersistQuery).SelectClass('TCategory');
   for i := 0 to mList.Count - 1 do
   begin
-    mCategory := mList[i] as TCategory;
-    if mCategory.CommandsCount = 0 then
+    mCategory := mList[i].Data.UnderObject as TCategory;
+    if mCategory.Commands.Count = 0 then
       Continue;
     mItem := TMenuItem.Create(mnMain);
     mItem.Caption := mCategory.Name;
@@ -197,14 +206,14 @@ end;
 procedure TLauncherForm.AddFavoriteCategories(AParentMenu: TMenuItem);
 var
   i: integer;
-  mList: IRBDataList;
+  mList: IPersistRefList;
   mCategory: TCategory;
 begin
-  mList := fContext.DataStore.LoadList('TCategory');
+  mList := (Store as IPersistQuery).SelectClass('TCategory');
   for i := 0 to mList.Count - 1 do
   begin
-    mCategory := mList[i] as TCategory;
-    if mCategory.CommandsCount = 0 then
+    mCategory := mList[i].Data.UnderObject as TCategory;
+    if mCategory.Commands.Count = 0 then
       Continue;
     if mCategory.RunAllFavorite then
       AddRunAllCategoryCommnad(mCategory, AParentMenu);
@@ -222,10 +231,10 @@ var
   mItem: TMenuItem;
   mCommand: TCommand;
 begin
-  for i := 0 to ACategory.CommandsCount - 1 do
+  for i := 0 to ACategory.Commands.Count - 1 do
   begin
     mItem := TMenuItem.Create(mnMain);
-    mCommand := ACategory.Commands[i];
+    mCommand := ACategory.Commands[i].Data.UnderObject as TCommand;
     mItem.Caption := mCommand.Name;
     mItem.OnClick := @OnRunCommandClick;
     AParentMenu.Add(mItem);
@@ -267,19 +276,13 @@ end;
 
 procedure TLauncherForm.ReloadCommands;
 begin
-  fRunList := fContext.DataStore.LoadList('TCommand');
+  fRunList := (Store as IPersistQuery).SelectClass('TCommand');
 end;
 
 procedure TLauncherForm.Rebuild;
 begin
   ReloadCommands;
   RebuildMenu(pmLaunch.Items);
-end;
-
-procedure TLauncherForm.AttachMainContext(const AContext: IMainContext);
-begin
-  fContext := AContext;
-  Rebuild;
 end;
 
 constructor TLauncherForm.Create(TheOwner: TComponent);

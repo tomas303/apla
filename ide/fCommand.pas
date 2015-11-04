@@ -6,14 +6,15 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  EditBtn, StdCtrls, Buttons, Grids, ComCtrls, rtti_broker_iBroker,
-  rtti_idebinder_iBindings, rtti_idebinder_Lib, types;
+  EditBtn, StdCtrls, Buttons, Grids, ComCtrls, types,
+  trl_irttibroker, trl_ifactory, trl_ipersist, trl_ipersiststore,
+  tvl_iedit, tvl_ibindings;
 
 type
 
   { TCommandForm }
 
-  TCommandForm = class(TForm)
+  TCommandForm = class(TForm, IEditData)
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
     lblShowWindow: TLabel;
@@ -38,9 +39,10 @@ type
   private
     fBinder: IRBDataBinder;
     fBehaveBinder: IRBBehavioralBinder;
-  public
-    procedure Init(const AData: IRBdata; const ADataQuery: IRBDataQuery);
-    class function Edit(const AData: IRBdata; const ADataQuery: IRBDataQuery): Boolean;
+  protected
+    function Edit(const AData: IRBdata): Boolean;
+  published
+    property Binder: IRBDataBinder read fBinder write fBinder;
   end;
 
 var
@@ -52,24 +54,14 @@ implementation
 
 { TCommandForm }
 
-procedure TCommandForm.Init(const AData: IRBdata; const ADataQuery: IRBDataQuery);
+function TCommandForm.Edit(const AData: IRBdata): Boolean;
 begin
-  fBehaveBinder := TLib.NewBehavioralBinder;
-  fBehaveBinder.Bind(Self);
-  fBinder := TLib.NewDataBinder;
-  fBinder.Bind(Self, AData, ADataQuery);
-end;
-
-class function TCommandForm.Edit(const AData: IRBdata; const ADataQuery: IRBDataQuery): Boolean;
-var
-  m: TCommandForm;
-begin
-  m := TCommandForm.Create(nil);
+  //fBehaveBinder.Bind(Self);
   try
-    m.Init(AData, ADataQuery);
-    Result := m.ShowModal = mrOK;
+    Binder.Bind(Self, AData);
+    Result := ShowModal = mrOK;
   finally
-    m.Free;
+    Binder.Unbind;
   end;
 end;
 

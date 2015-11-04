@@ -6,7 +6,7 @@ object CategoriesForm: TCategoriesForm
   Caption = 'Categories'
   ClientHeight = 237
   ClientWidth = 316
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object pnRunEdit: TPanel
     Left = 0
     Height = 33
@@ -57,7 +57,7 @@ object CategoriesForm: TCategoriesForm
     Items.Strings = (
       'Name'
     )
-    ItemHeight = 25
+    ItemHeight = 21
     ScrollWidth = 312
     TabOrder = 1
   end

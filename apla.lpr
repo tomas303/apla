@@ -7,14 +7,13 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, fCommands, uGroups, uCommands, uMain, iMain, fCommand, fLauncher,
-  memdslaz, testik, uCategories, fCategories, fCategory
-  { you can add units after this };
+  {Forms, fCommands, uGroups, uCommands, fCommand, fLauncher,
+  memdslaz, testik, uCategories, fCategories, fCategory,}
+  uapp;
 
 {$R *.res}
 
 begin
-  TMain.Run(TLauncherForm);
-  //TMain.Run(TCommandsForm);
+  TApp.Go;
 end.
 

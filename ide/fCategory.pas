@@ -6,14 +6,15 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Grids, Buttons, StdCtrls, rtti_broker_iBroker,
-  rtti_idebinder_iBindings, rtti_idebinder_Lib;
+  Grids, Buttons, StdCtrls,
+  trl_irttibroker, trl_ifactory, trl_ipersist, trl_ipersiststore,
+  tvl_iedit, tvl_ibindings;
 
 type
 
   { TCategoryForm }
 
-  TCategoryForm = class(TForm)
+  TCategoryForm = class(TForm, IEditData)
     btnCancel: TBitBtn;
     btnOK: TBitBtn;
     Favorite_bind: TCheckBox;
@@ -26,9 +27,10 @@ type
   private
     fBinder: IRBDataBinder;
     fBehaveBinder: IRBBehavioralBinder;
-  public
-    procedure Init(const AData: IRBdata; const ADataQuery: IRBDataQuery);
-    class function Edit(const AData: IRBdata; const ADataQuery: IRBDataQuery): Boolean;
+  protected
+    function Edit(const AData: IRBdata): Boolean;
+  published
+    property Binder: IRBDataBinder read fBinder write fBinder;
   end;
 
 implementation
@@ -37,26 +39,14 @@ implementation
 
 { TCategoryForm }
 
-procedure TCategoryForm.Init(const AData: IRBdata;
-  const ADataQuery: IRBDataQuery);
+function TCategoryForm.Edit(const AData: IRBdata): Boolean;
 begin
-  fBehaveBinder := TLib.NewBehavioralBinder;
-  fBehaveBinder.Bind(Self);
-  fBinder := TLib.NewDataBinder;
-  fBinder.Bind(Self, AData, ADataQuery);
-end;
-
-class function TCategoryForm.Edit(const AData: IRBdata;
-  const ADataQuery: IRBDataQuery): Boolean;
-var
-  m: TCategoryForm;
-begin
-  m := TCategoryForm.Create(nil);
+  //fBehaveBinder.Bind(Self);
   try
-    m.Init(AData, ADataQuery);
-    Result := m.ShowModal = mrOK;
+    Binder.Bind(Self, AData);
+    Result := ShowModal = mrOK;
   finally
-    m.Free;
+    Binder.Unbind;
   end;
 end;
 

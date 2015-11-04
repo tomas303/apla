@@ -18,12 +18,12 @@
       <StringTable ProductVersion=""/>
     </VersionInfo>
     <MacroValues Count="1">
-      <Macro1 Name="LCLWidgetType" Value="qt"/>
+      <Macro1 Name="LCLWidgetType" Value="gtk2"/>
     </MacroValues>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
       <SharedMatrixOptions Count="1">
-        <Item1 ID="983874326092" Modes="Default" Type="IDEMacro" MacroName="LCLWidgetType" Value="qt"/>
+        <Item1 ID="373169446563" Modes="Default" Type="IDEMacro" MacroName="LCLWidgetType" Value="gtk2"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
@@ -34,31 +34,27 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="6">
+    <RequiredPackages Count="5">
       <Item1>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="MemDSLaz"/>
+        <PackageName Value="tvl"/>
       </Item2>
       <Item3>
-        <PackageName Value="rtti_serializer"/>
+        <PackageName Value="trl"/>
       </Item3>
       <Item4>
-        <PackageName Value="rtti_idebinder"/>
+        <PackageName Value="FCL"/>
       </Item4>
       <Item5>
-        <PackageName Value="rtti_broker"/>
+        <PackageName Value="MemDSLaz"/>
       </Item5>
-      <Item6>
-        <PackageName Value="LCL"/>
-      </Item6>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="11">
       <Unit0>
         <Filename Value="apla.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="apla"/>
       </Unit0>
       <Unit1>
         <Filename Value="ide/fCommands.pas"/>
@@ -66,73 +62,58 @@
         <ComponentName Value="CommandsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fCommands"/>
       </Unit1>
       <Unit2>
         <Filename Value="data/uGroups.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="uGroups"/>
       </Unit2>
       <Unit3>
         <Filename Value="data/uCommands.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="uCommands"/>
       </Unit3>
       <Unit4>
-        <Filename Value="uMain.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="uMain"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="iMain.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="iMain"/>
-      </Unit5>
-      <Unit6>
         <Filename Value="ide/fCommand.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CommandForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fCommand"/>
-      </Unit6>
-      <Unit7>
+      </Unit4>
+      <Unit5>
         <Filename Value="ide/fLauncher.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="LauncherForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fLauncher"/>
-      </Unit7>
-      <Unit8>
+      </Unit5>
+      <Unit6>
         <Filename Value="ide/testik.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="testik"/>
-      </Unit8>
-      <Unit9>
+      </Unit6>
+      <Unit7>
         <Filename Value="data/uCategories.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="uCategories"/>
-      </Unit9>
-      <Unit10>
+      </Unit7>
+      <Unit8>
         <Filename Value="ide/fCategories.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CategoriesForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fCategories"/>
-      </Unit10>
-      <Unit11>
+      </Unit8>
+      <Unit9>
         <Filename Value="ide/fCategory.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CategoryForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fCategory"/>
-      </Unit11>
+      </Unit9>
+      <Unit10>
+        <Filename Value="uapp.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -156,12 +137,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
