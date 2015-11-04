@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, tvl_uapplaunch, fLauncher,
-  uGroups, uCommands, uCategories,
+  uCommands, uCategories,
   fCommand, fCommands,
   fCategory, fCategories,
   forms,
@@ -190,8 +190,6 @@ begin
   //
   mReg := mDIC.Add(TPersistRefList, IPersistRefList);
   // persist data
-  RegisterDataClass(mDIC, TGroup);
-  RegisterDataClass(mDIC, TGroupItem);
   RegisterDataClass(mDIC, TEnvVariable);
   RegisterDataClass(mDIC, TParameter);
   RegisterDataClass(mDIC, TEnvVariableTemplate);
