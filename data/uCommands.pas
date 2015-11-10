@@ -81,7 +81,7 @@ type
     TEnvVariables = TFPGObjectList<TEnvVariable>;
     TParameters = TFPGObjectList<TParameter>;
   private
-    fCommand: string;
+    fCommand: TMemoString;
     fName: string;
     fDirectory: string;
     fEnvVariables: IPersistManyTEnvVariable;
@@ -96,7 +96,7 @@ type
     procedure AfterConstruction; override;
     procedure Run;
   published
-    property Command: string read fCommand write fCommand;
+    property Command: TMemoString read fCommand write fCommand;
     property Name: string read fName write fName;
     property Directory: string read fDirectory write fDirectory;
     property EnvVariables: IPersistManyTEnvVariable read fEnvVariables;
