@@ -1,7 +1,7 @@
 object CategoryForm: TCategoryForm
-  Left = 485
+  Left = 487
   Height = 471
-  Top = 125
+  Top = 172
   Width = 730
   Caption = 'Category'
   ClientHeight = 471
@@ -31,7 +31,6 @@ object CategoryForm: TCategoryForm
     Top = 0
     Width = 730
     Align = alTop
-    Caption = 'pnDetail'
     ClientHeight = 72
     ClientWidth = 730
     TabOrder = 0
@@ -59,6 +58,7 @@ object CategoryForm: TCategoryForm
     object Favorite_bind: TCheckBox
       Left = 47
       Height = 26
+      Hint = 'Place item into favorite area(top of popup menu)'
       Top = 40
       Width = 75
       Anchors = [akTop, akRight]
@@ -68,6 +68,7 @@ object CategoryForm: TCategoryForm
     object RunAll_bind: TCheckBox
       Left = 151
       Height = 26
+      Hint = 'Add item for run all items in category atonce'
       Top = 40
       Width = 68
       Anchors = [akTop, akRight]
@@ -77,6 +78,7 @@ object CategoryForm: TCategoryForm
     object RunAllFavorite_bind: TCheckBox
       Left = 248
       Height = 26
+      Hint = 'Place item for run all into favorite area(very top of popup menu)'
       Top = 40
       Width = 110
       Anchors = [akTop, akRight]

@@ -34,7 +34,7 @@ type
     fEdit: IEditData;
     procedure RunCommand(const AData: IRBData);
   protected
-    procedure ActualizeRunTab;
+    procedure Actualize;
   public
     procedure List;
   published
@@ -59,7 +59,7 @@ begin
   begin
     Store.Save(mData);
     Store.Flush;
-    ActualizeRunTab;
+    Actualize;
   end;
 end;
 
@@ -67,7 +67,7 @@ procedure TCommandsForm.btnDeleteClick(Sender: TObject);
 begin
   Store.Delete(Binder.CurrentData);
   Store.Flush;
-  ActualizeRunTab;
+  Actualize;
 end;
 
 procedure TCommandsForm.btnEditClick(Sender: TObject);
@@ -84,7 +84,7 @@ begin
     mData.Assign(mNewData);
     Store.Save(mData);
     Store.Flush;
-    ActualizeRunTab;
+    Actualize;
   end;
 end;
 
@@ -102,7 +102,7 @@ begin
   (AData.UnderObject as TCommand).Run;
 end;
 
-procedure TCommandsForm.ActualizeRunTab;
+procedure TCommandsForm.Actualize;
 begin
   Binder.Reload;
 end;
@@ -111,7 +111,7 @@ procedure TCommandsForm.List;
 begin
   Binder.Bind(grdCommands, 'TCommand');
   try
-    ActualizeRunTab;
+    Actualize;
     ShowModal;
   finally
     Binder.Unbind;

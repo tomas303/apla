@@ -31,6 +31,7 @@ type
     function Edit(const AData: IRBdata): Boolean;
   published
     property Binder: IRBDataBinder read fBinder write fBinder;
+    property BehaveBinder: IRBBehavioralBinder read fBehaveBinder write fBehaveBinder;
   end;
 
 implementation
@@ -41,12 +42,16 @@ implementation
 
 function TCategoryForm.Edit(const AData: IRBdata): Boolean;
 begin
-  //fBehaveBinder.Bind(Self);
+  BehaveBinder.Bind(Self);
   try
     Binder.Bind(Self, AData);
-    Result := ShowModal = mrOK;
+    try
+      Result := ShowModal = mrOK;
+    finally
+      Binder.Unbind;
+    end;
   finally
-    Binder.Unbind;
+    BehaveBinder.Unbind;
   end;
 end;
 

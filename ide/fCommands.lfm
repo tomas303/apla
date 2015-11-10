@@ -1,49 +1,48 @@
 object CommandsForm: TCommandsForm
-  Left = 364
+  Left = 578
   Height = 206
-  Top = 177
-  Width = 363
-  Caption = 'Launcher'
+  Top = 171
+  Width = 457
+  Caption = 'Commands'
   ClientHeight = 206
-  ClientWidth = 363
+  ClientWidth = 457
   LCLVersion = '1.5'
   object pnRunEdit: TPanel
     Left = 0
     Height = 33
     Top = 173
-    Width = 363
+    Width = 457
     Align = alBottom
-    Caption = 'pnRunEdit'
     ClientHeight = 33
-    ClientWidth = 363
+    ClientWidth = 457
     TabOrder = 0
     object btnAdd: TButton
-      Left = 105
+      Left = 199
       Height = 25
       Top = 4
       Width = 75
       Anchors = [akTop, akRight]
-      Caption = 'Add'
+      Caption = '&Add'
       OnClick = btnAddClick
       TabOrder = 0
     end
     object btnEdit: TButton
-      Left = 193
+      Left = 287
       Height = 25
       Top = 3
       Width = 75
       Anchors = [akTop, akRight]
-      Caption = 'Edit'
+      Caption = '&Edit'
       OnClick = btnEditClick
       TabOrder = 1
     end
     object btnDelete: TButton
-      Left = 281
+      Left = 375
       Height = 25
       Top = 4
       Width = 75
       Anchors = [akTop, akRight]
-      Caption = 'Delete'
+      Caption = '&Delete'
       OnClick = btnDeleteClick
       TabOrder = 2
     end
@@ -52,7 +51,7 @@ object CommandsForm: TCommandsForm
     Left = 0
     Height = 152
     Top = 21
-    Width = 363
+    Width = 457
     Align = alClient
     ColCount = 3
     Columns = <    
@@ -61,18 +60,21 @@ object CommandsForm: TCommandsForm
           'Name'
         )
         Title.Caption = 'Title'
-      end    
-      item
-        PickList.Strings = (
-          'Directory'
-        )
-        Title.Caption = 'Title'
+        Width = 100
       end    
       item
         PickList.Strings = (
           'Command'
         )
         Title.Caption = 'Title'
+        Width = 150
+      end    
+      item
+        PickList.Strings = (
+          'Directory'
+        )
+        Title.Caption = 'Title'
+        Width = 200
       end>
     ExtendedSelect = False
     FixedCols = 0
@@ -84,9 +86,8 @@ object CommandsForm: TCommandsForm
     Left = 0
     Height = 21
     Top = 0
-    Width = 363
+    Width = 457
     Align = alTop
     TabOrder = 2
-    Text = 'edRun'
   end
 end

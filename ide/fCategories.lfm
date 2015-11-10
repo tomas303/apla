@@ -1,8 +1,9 @@
 object CategoriesForm: TCategoriesForm
-  Left = 333
+  Left = 660
   Height = 237
-  Top = 213
+  Top = 231
   Width = 316
+  ActiveControl = lbCategories
   Caption = 'Categories'
   ClientHeight = 237
   ClientWidth = 316
@@ -13,7 +14,6 @@ object CategoriesForm: TCategoriesForm
     Top = 204
     Width = 316
     Align = alBottom
-    Caption = 'pnRunEdit'
     ClientHeight = 33
     ClientWidth = 316
     TabOrder = 0
@@ -23,7 +23,7 @@ object CategoriesForm: TCategoriesForm
       Top = 4
       Width = 75
       Anchors = [akTop, akRight]
-      Caption = 'Add'
+      Caption = '&Add'
       OnClick = btnAddClick
       TabOrder = 0
     end
@@ -33,7 +33,7 @@ object CategoriesForm: TCategoriesForm
       Top = 3
       Width = 75
       Anchors = [akTop, akRight]
-      Caption = 'Edit'
+      Caption = '&Edit'
       OnClick = btnEditClick
       TabOrder = 1
     end
@@ -43,7 +43,7 @@ object CategoriesForm: TCategoriesForm
       Top = 4
       Width = 75
       Anchors = [akTop, akRight]
-      Caption = 'Delete'
+      Caption = '&Delete'
       OnClick = btnDeleteClick
       TabOrder = 2
     end

@@ -234,6 +234,8 @@ begin
   for i := 0 to ACategory.Commands.Count - 1 do
   begin
     mItem := TMenuItem.Create(mnMain);
+    if ACategory.Commands[i].Data = nil then
+      Continue;
     mCommand := ACategory.Commands[i].Data.UnderObject as TCommand;
     mItem.Caption := mCommand.Name;
     mItem.OnClick := @OnRunCommandClick;

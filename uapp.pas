@@ -16,7 +16,7 @@ uses
   trl_irttibroker, trl_urttibroker,
   trl_upersistxml,
   tvl_udatabinder, tvl_udatabinders, tvl_utallybinders,
-  tvl_ibindings, tvl_iedit;
+  tvl_ibindings, tvl_iedit, tvl_ubehavebinder;
 
 type
 
@@ -142,6 +142,8 @@ begin
   mReg := fDIC.Add(TGUILauncher, '', ckSingle);
   mReg.InjectProp('Kicker', IGUIKicker);
   //
+  mReg := fDIC.Add(TRBBehavioralBinder, IRBBehavioralBinder);
+  //
   mReg := fDIC.Add(TKicker, IGUIKicker);
   mReg.InjectProp('MainForm', TLauncherForm);
   //
@@ -158,6 +160,7 @@ begin
   //
   mReg := fDIC.Add(TCommandForm, Application, IEditData, 'CommandForm');
   mReg.InjectProp('Binder', IRBDataBinder, '', mPersistDIC);
+  mReg.InjectProp('BehaveBinder', IRBBehavioralBinder);
   //
   mReg := fDIC.Add(TCategoriesForm, Application, IListData, 'CategoriesForm');
   mReg.InjectProp('Store', IPersistStore, '', mPersistDIC);
@@ -167,6 +170,7 @@ begin
   //
   mReg := fDIC.Add(TCategoryForm, Application, IEditData, 'CategoryForm');
   mReg.InjectProp('Binder', IRBDataBinder, '', mPersistDIC);
+  mReg.InjectProp('BehaveBinder', IRBBehavioralBinder);
 end;
 
 procedure TApp.RegisterPersist;
