@@ -98,13 +98,15 @@ end;
 
 procedure TApp.Setup;
 var
-  mAppDir, mSubdir: string;
+  mAppDir, mSubdir, mExt: string;
 begin
   if Paramcount > 0 then
     mAppDir := ParamStr(1)
   else
   begin
     mSubdir := '.' + ExtractFileName(ParamStr(0));
+    mExt := ExtractFileExt(ParamStr(0));
+    mSubDir := copy(mSubDir, 1, Length(mSubdir) - Length(mExt));
     {$IFDEF UNIX}
     mAppDir := GetEnvironmentVariable('HOME') + PathDelim + mSubdir + PathDelim;
     {$ENDIF UNIX}

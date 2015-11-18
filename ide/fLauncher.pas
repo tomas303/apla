@@ -70,9 +70,6 @@ type
     property Categories: IListData read fCategories write fCategories;
   end;
 
-var
-  LauncherForm: TLauncherForm;
-
 implementation
 
 {$R *.lfm}
