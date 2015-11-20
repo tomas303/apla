@@ -6,7 +6,7 @@ interface
 
 uses
   sysutils, fgl, process,
-  trl_irttibroker, trl_ifactory, trl_ipersist, trl_ipersiststore,
+  trl_irttibroker, trl_ifactory, trl_ipersist,
   trl_upersist, trl_upersiststore;
 
 type

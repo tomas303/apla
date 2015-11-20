@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
   StdCtrls, ExtCtrls, Grids, Buttons, Menus,
   uCommands, fCommand, types,
-  trl_irttibroker, trl_ifactory, trl_ipersist, trl_ipersiststore,
+  trl_irttibroker, trl_ifactory, trl_ipersist,
   tvl_iedit, tvl_ibindings;
 
 type
