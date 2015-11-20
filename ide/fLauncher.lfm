@@ -4307,11 +4307,16 @@ object LauncherForm: TLauncherForm
       8001AC418001AC41C003AC41E007AC41F01FAC41
     }
     Visible = True
+    OnMouseUp = tiLaunchMouseUp
     left = 208
     top = 153
   end
   object pmLaunch: TPopupMenu
     left = 205
     top = 58
+  end
+  object pmFavorites: TPopupMenu
+    left = 82
+    top = 128
   end
 end

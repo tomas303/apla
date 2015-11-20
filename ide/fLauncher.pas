@@ -32,7 +32,10 @@ type
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     pmLaunch: TPopupMenu;
+    pmFavorites: TPopupMenu;
     tiLaunch: TTrayIcon;
+    procedure tiLaunchMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     fCategories: IListData;
     fCommands: IListData;
@@ -58,6 +61,7 @@ type
     procedure AddCategoryCommnads(const ACategory: TCategory; AParentMenu: TMenuItem);
     procedure AddRunAllCategoryCommnad(const ACategory: TCategory; AParentMenu: TMenuItem);
     procedure RebuildMenu(const ARootMenu: TMenuItem);
+    procedure RebuildFavoritesMenu(const ARootMenu: TMenuItem);
     procedure ReloadCommands;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -75,6 +79,13 @@ implementation
 {$R *.lfm}
 
 { TLauncherForm }
+
+procedure TLauncherForm.tiLaunchMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if (Button = mbLeft) and (pmFavorites.Items.Count > 0) then
+    pmFavorites.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+end;
 
 function TLauncherForm.CreateMenuItem(AParentMenu: TMenuItem;
   const ACaption: string; AOnClick: TNotifyEvent; ATag: integer): TMenuItem;
@@ -257,8 +268,6 @@ procedure TLauncherForm.RebuildMenu(const ARootMenu: TMenuItem);
 var
   mItem: TMenuItem;
 begin
-
-
   fLaunchList.Clear;
   ARootMenu.Clear;
   AddFavoriteCategories(ARootMenu);
@@ -273,6 +282,12 @@ begin
   AddCloseApplication(ARootMenu);
 end;
 
+procedure TLauncherForm.RebuildFavoritesMenu(const ARootMenu: TMenuItem);
+begin
+  AddFavoriteCategories(ARootMenu);
+  AddManageCategories(ARootMenu);
+end;
+
 procedure TLauncherForm.ReloadCommands;
 begin
   fRunList := (Store as IPersistQuery).SelectClass('TCommand');
@@ -282,6 +297,7 @@ procedure TLauncherForm.Rebuild;
 begin
   ReloadCommands;
   RebuildMenu(pmLaunch.Items);
+  RebuildFavoritesMenu(pmFavorites.Items);
 end;
 
 constructor TLauncherForm.Create(TheOwner: TComponent);
