@@ -5,7 +5,7 @@ object LauncherForm: TLauncherForm
   Width = 316
   Caption = 'Form1'
   Menu = mnMain
-  LCLVersion = '1.5'
+  LCLVersion = '1.7'
   object mnMain: TMainMenu
     left = 125
     top = 56

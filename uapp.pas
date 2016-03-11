@@ -23,13 +23,15 @@ type
 
   TKicker = class(TInterfacedObject, IGUIKicker)
   private
-    fMainForm: TForm;
+    fMainForm: IMainForm;
+    fStore: IPersistStore;
   protected
-    procedure Start;
-    function GetMainForm: TForm;
-    procedure SetMainForm(AValue: TForm);
+    procedure StartUp;
+    procedure ShutDown;
+    function GetMainForm: IMainForm;
   published
-    property MainForm: TForm read GetMainForm write SetMainForm;
+    property MainForm: IMainForm read fMainForm write fMainForm;
+    property Store: IPersistStore read fStore write fStore;
   end;
 
   { TApp }
@@ -58,20 +60,19 @@ implementation
 
 { TKicker }
 
-procedure TKicker.Start;
+procedure TKicker.StartUp;
 begin
-  (MainForm as TLauncherForm).Store.Open;
-  (MainForm as TLauncherForm).Rebuild;
+  Store.Open;
+  MainForm.StartUp;
 end;
 
-function TKicker.GetMainForm: TForm;
+procedure TKicker.ShutDown;
+begin
+end;
+
+function TKicker.GetMainForm: IMainForm;
 begin
   Result := fMainForm;
-end;
-
-procedure TKicker.SetMainForm(AValue: TForm);
-begin
-  fMainForm := AValue;
 end;
 
 { TApp }
@@ -146,9 +147,10 @@ begin
   mReg := fDIC.Add(TRBBehavioralBinder, IRBBehavioralBinder);
   //
   mReg := fDIC.Add(TKicker, IGUIKicker);
-  mReg.InjectProp('MainForm', TLauncherForm);
+  mReg.InjectProp('MainForm', IMainForm);
+  mReg.InjectProp('Store', IPersistStore, '', mPersistDIC);
   //
-  mReg := fDIC.Add(TLauncherForm, Application);
+  mReg := fDIC.Add(TLauncherForm, Application, IMainForm);
   mReg.InjectProp('Store', IPersistStore, '', mPersistDIC);
   mReg.InjectProp('Commands', IListData, 'CommandsForm');
   mReg.InjectProp('Categories', IListData, 'CategoriesForm');

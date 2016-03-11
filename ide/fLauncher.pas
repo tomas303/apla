@@ -25,7 +25,7 @@ type
   TLaunchList = class(TCustomLaunchList)
   end;
 
-  TLauncherForm = class(TForm)
+  TLauncherForm = class(TForm, IMainForm)
     MenuItem4: TMenuItem;
     mnMain: TMainMenu;
     MenuItem1: TMenuItem;
@@ -43,6 +43,11 @@ type
     fStore: IPersistStore;
     fRunList: IPersistRefList;
     fLaunchList: TLaunchList;
+  protected
+    //IMainForm
+    procedure StartUp;
+    procedure ShutDown;
+    procedure ConnectCloseHandler(OnCloseHandler: TCloseEvent);
   protected
     function CreateMenuItem(AParentMenu: TMenuItem; const ACaption: string;
       AOnClick: TNotifyEvent; ATag: integer = 0): TMenuItem;
@@ -85,6 +90,20 @@ procedure TLauncherForm.tiLaunchMouseUp(Sender: TObject; Button: TMouseButton;
 begin
   if (Button = mbLeft) and (pmFavorites.Items.Count > 0) then
     pmFavorites.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+end;
+
+procedure TLauncherForm.StartUp;
+begin
+  Rebuild;
+end;
+
+procedure TLauncherForm.ShutDown;
+begin
+end;
+
+procedure TLauncherForm.ConnectCloseHandler(OnCloseHandler: TCloseEvent);
+begin
+  AddHandlerClose(OnCloseHandler);
 end;
 
 function TLauncherForm.CreateMenuItem(AParentMenu: TMenuItem;
