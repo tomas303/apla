@@ -68,6 +68,7 @@ end;
 
 procedure TKicker.ShutDown;
 begin
+  MainForm.ShutDown;
 end;
 
 function TKicker.GetMainForm: IMainForm;
