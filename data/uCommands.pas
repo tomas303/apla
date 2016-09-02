@@ -27,7 +27,7 @@ type
 
   { IPersistManyTEnvVariable }
 
-  IPersistManyTEnvVariable = interface(IPersistMany<TEnvVariable>)
+  IPersistManyTEnvVariable = interface(IPersistManyItems<TEnvVariable>)
   ['{E3912562-64E4-48FF-A7A4-7D8B284E167C}']
   end;
 
@@ -47,7 +47,7 @@ type
 
   { IPersistManyTParameter }
 
-  IPersistManyTParameter = interface(IPersistMany<TParameter>)
+  IPersistManyTParameter = interface(IPersistManyItems<TParameter>)
   ['{FC59552C-425C-46CD-9E4D-3FBFA6395DAC}']
   end;
 
