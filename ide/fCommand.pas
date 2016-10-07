@@ -57,7 +57,7 @@ begin
   BehaveBinder.Bind(Self);
   try
     try
-      Binder.Bind(Self, AData);
+      Binder.BindArea(Self, AData);
       Result := ShowModal = mrOK;
     finally
       Binder.Unbind;
