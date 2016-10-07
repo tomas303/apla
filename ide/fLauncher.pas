@@ -198,7 +198,7 @@ var
 begin
   for i := 0 to fRunList.Count - 1 do
   begin
-    mItem := TMenuItem.Create(mnMain);
+    mItem := TMenuItem.Create(AParentMenu.Owner);
     mItem.Caption := fRunList[i].Data.ItemByName['Name'].AsString;
     mItem.OnClick := @OnRunCommandClick;
     AParentMenu.Add(mItem);
@@ -219,7 +219,7 @@ begin
     mCategory := mList[i].Data.UnderObject as TCategory;
     if mCategory.Commands.Count = 0 then
       Continue;
-    mItem := TMenuItem.Create(mnMain);
+    mItem := TMenuItem.Create(AParentMenu.Owner);
     mItem.Caption := mCategory.Name;
     if mCategory.RunAll then begin
       AddRunAllCategoryCommnad(mCategory, mItem);
@@ -260,7 +260,7 @@ var
 begin
   for i := 0 to ACategory.Commands.Count - 1 do
   begin
-    mItem := TMenuItem.Create(mnMain);
+    mItem := TMenuItem.Create(AParentMenu.Owner);
     if ACategory.Commands[i].Data = nil then
       Continue;
     mCommand := ACategory.Commands[i].Data.UnderObject as TCommand;
@@ -276,7 +276,7 @@ procedure TLauncherForm.AddRunAllCategoryCommnad(const ACategory: TCategory;
 var
   mItem: TMenuItem;
 begin
-  mItem := TMenuItem.Create(mnMain);
+  mItem := TMenuItem.Create(AParentMenu.Owner);
   mItem.Caption := 'Run all ' + ACategory.Name;
   mItem.OnClick := @OnRunAllCategoryClick;
   AParentMenu.Add(mItem);
@@ -303,6 +303,7 @@ end;
 
 procedure TLauncherForm.RebuildFavoritesMenu(const ARootMenu: TMenuItem);
 begin
+  ARootMenu.Clear;
   AddFavoriteCategories(ARootMenu);
   AddManageCategories(ARootMenu);
 end;
