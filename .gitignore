@@ -11,3 +11,7 @@ lib/
 *.lps
 *.xml
 *.bak
+apla
+store/
+*.marks
+*.dbg
