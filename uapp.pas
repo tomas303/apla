@@ -15,7 +15,8 @@ uses
   trl_irttibroker, trl_urttibroker,
   trl_upersistxml,
   tvl_udatabinder, tvl_udatabinders, tvl_utallybinders,
-  tvl_ibindings, tvl_iedit, tvl_ubehavebinder;
+  tvl_ibindings, tvl_iedit, tvl_ubehavebinder,
+  OsUtils, uOsUtils;
 
 type
 
@@ -46,6 +47,7 @@ type
     procedure InjectPersistRef(const AItem: IRBDataItem);
     procedure Setup;
     procedure RegisterDataClass(ADIC: TDIContainer; AClass: TClass);
+    procedure RegisterCore;
     procedure RegisterGUI;
     procedure RegisterPersist;
     procedure RegisterServices;
@@ -81,6 +83,7 @@ end;
 procedure TApp.InjectPersistRef(const AItem: IRBDataItem);
 var
   mPersistDIC: TDIContainer;
+  mOSUtils: IOsUtils;
 begin
   if AItem.IsInterface and Supports(AItem.AsInterface, IPersistRef) then
   begin
@@ -94,6 +97,10 @@ begin
     // need to create IPersistRef members
     mPersistDIC := fDIC.Locate(TDIContainer, cPersistRID);
     (AItem.AsInterface as IPersistManyRefs).Factory := mPersistDIC.Locate(IPersistFactory, cPersistRID);
+  end;
+  if AItem.IsID then begin
+    mOSUtils := fDIC.Locate(IOsUtils);
+    AItem.AsString := mOSUtils.NewGID;
   end;
 end;
 
@@ -135,6 +142,13 @@ begin
   mReg.InjectProp('UnderObject', AClass);
 end;
 
+procedure TApp.RegisterCore;
+var
+  mReg: TDIReg;
+begin
+  mReg := fDIC.Add(TOsUtils, IOsUtils);
+end;
+
 procedure TApp.RegisterGUI;
 var
   mReg: TDIReg;
@@ -155,6 +169,7 @@ begin
   mReg.InjectProp('Store', IPersistStore, '', mPersistDIC);
   mReg.InjectProp('Commands', IListData, 'CommandsForm');
   mReg.InjectProp('Categories', IListData, 'CategoriesForm');
+  mReg.InjectProp('OsUtils', IOsUtils);
   //
   mReg := fDIC.Add(TCommandsForm, Application, IListData, 'CommandsForm');
   mReg.InjectProp('Store', IPersistStore, '', mPersistDIC);
@@ -231,6 +246,7 @@ end;
 
 procedure TApp.RegisterServices;
 begin
+  RegisterCore;
   RegisterPersist;
   RegisterGUI;
 end;

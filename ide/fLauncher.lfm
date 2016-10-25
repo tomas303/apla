@@ -4312,11 +4312,18 @@ object LauncherForm: TLauncherForm
     top = 153
   end
   object pmLaunch: TPopupMenu
+    Images = ilIcons
     left = 205
     top = 58
   end
   object pmFavorites: TPopupMenu
     left = 82
     top = 128
+  end
+  object ilIcons: TImageList
+    AllocBy = 16
+    DrawingStyle = dsTransparent
+    left = 40
+    top = 56
   end
 end

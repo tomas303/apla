@@ -83,6 +83,7 @@ type
   private
     fCommand: TMemoString;
     fName: string;
+    fID: string;
     fDirectory: string;
     fEnvVariables: IPersistManyTEnvVariable;
     fParameters: IPersistManyTParameter;
@@ -98,6 +99,7 @@ type
   published
     property Command: string read fCommand write fCommand;
     property Name: string read fName write fName;
+    property ID: TIDString read fID write fID;
     property Directory: string read fDirectory write fDirectory;
     property EnvVariables: IPersistManyTEnvVariable read fEnvVariables;
     property Parameters: IPersistManyTParameter read fParameters;

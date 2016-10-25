@@ -9,23 +9,58 @@ uses
   ExtCtrls, uCommands, fCommands, fCategories,
   fgl, uCategories,
   trl_irttibroker, trl_ifactory, trl_ipersist,
-  tvl_iedit, tvl_ibindings;
+  tvl_iedit, tvl_ibindings, OsUtils, FPimage;
 
 type
 
   ELauncher = class(Exception)
   end;
 
-  { TLauncherForm }
+  { ILauncher }
 
-  TCustomLaunchList = specialize TFPGMap<pointer, TObject>;
+  ILauncher = interface
+  ['{B0DFA1A4-2D6B-4EFA-98D0-53F69D4DA632}']
+    function GetCommand: IRBData;
+    function GetImageIndex: integer;
+    procedure SetCommand(const AValue: IRBData);
+    property Command: IRBData read GetCommand write SetCommand;
+    property ImageIndex: integer read GetImageIndex;
+  end;
+
+  { TLauncher }
+
+  TLauncher = class(TInterfacedObject, ILauncher)
+  protected
+    fCommand: IRBData;
+    fImageIndex: Integer;
+    fIcons: TImageList;
+    fOsUtils: IOsUtils;
+  protected
+    // ILauncher
+    function GetCommand: IRBData;
+    function GetImageIndex: integer;
+    procedure SetCommand(const AValue: IRBData);
+    property Command: IRBData read GetCommand write SetCommand;
+    property ImageIndex: integer read GetImageIndex;
+  public
+    class function New(const ACommand: IRBData; AIcons: TImageList;
+      const AOsUtils: IOsUtils): ILauncher;
+  end;
 
   { TLaunchList }
 
-  TLaunchList = class(TCustomLaunchList)
+  TLaunchList = class(specialize TFPGMap<pointer, ILauncher>)
   end;
 
+  { TRunLaunchList }
+
+  TRunList = class(specialize TFPGMap<string, ILauncher>)
+  end;
+
+  { TLauncherForm }
+
   TLauncherForm = class(TForm, IMainForm)
+    ilIcons: TImageList;
     MenuItem4: TMenuItem;
     mnMain: TMainMenu;
     MenuItem1: TMenuItem;
@@ -36,12 +71,16 @@ type
     tiLaunch: TTrayIcon;
     procedure tiLaunchMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-  private
-    fCategories: IListData;
-    fCommands: IListData;
+  protected
     fFactory: IPersistFactory;
     fStore: IPersistStore;
-    fRunList: IPersistRefList;
+    fCommands: IListData;
+    fCategories: IListData;
+    fOsUtils: IOsUtils;
+  protected
+    // map command ID -> ILauncher
+    fRunList: TRunList;
+    // map TMenuItem -> ILauncher
     fLaunchList: TLaunchList;
   protected
     //IMainForm
@@ -64,7 +103,7 @@ type
     procedure AddNonFavoriteCategories(AParentMenu: TMenuItem);
     procedure AddFavoriteCategories(AParentMenu: TMenuItem);
     procedure AddCategoryCommnads(const ACategory: TCategory; AParentMenu: TMenuItem);
-    procedure AddRunAllCategoryCommnad(const ACategory: TCategory; AParentMenu: TMenuItem);
+    procedure AddRunAllCategoryCommnad(const ACategory: IRBData; AParentMenu: TMenuItem);
     procedure RebuildMenu(const ARootMenu: TMenuItem);
     procedure RebuildFavoritesMenu(const ARootMenu: TMenuItem);
     procedure ReloadCommands;
@@ -77,11 +116,47 @@ type
     property Store: IPersistStore read fStore write fStore;
     property Commands: IListData read fCommands write fCommands;
     property Categories: IListData read fCategories write fCategories;
+    property OsUtils: IOsUtils read fOsUtils write fOsUtils;
   end;
 
 implementation
 
 {$R *.lfm}
+
+{ TLauncher }
+
+function TLauncher.GetCommand: IRBData;
+begin
+  Result := fCommand;
+end;
+
+function TLauncher.GetImageIndex: integer;
+begin
+  if fImageIndex = -1 then
+  begin
+    fImageIndex := fOsUtils.AddApplicationImage(Command.ItemByName['Command'].AsString,
+      fIcons.Height, fIcons);
+  end;
+  Result := fImageIndex;
+end;
+
+procedure TLauncher.SetCommand(const AValue: IRBData);
+begin
+  fCommand := AValue;
+end;
+
+class function TLauncher.New(const ACommand: IRBData; AIcons: TImageList;
+  const AOsUtils: IOsUtils): ILauncher;
+var
+  mLauncher: TLauncher;
+begin
+  mLauncher := TLauncher.Create;
+  mLauncher.Command := ACommand;
+  mLauncher.fIcons := AIcons;
+  mLauncher.fImageIndex := -1;
+  mLauncher.fOsUtils := AOsUtils;
+  Result := mLauncher;
+end;
 
 { TLauncherForm }
 
@@ -94,6 +169,8 @@ end;
 
 procedure TLauncherForm.StartUp;
 begin
+  ilIcons.Height := OsUtils.MenuHeight;
+  ilIcons.Width := ilIcons.Height;
   Rebuild;
 end;
 
@@ -124,8 +201,10 @@ end;
 procedure TLauncherForm.OnRunCommandClick(Sender: TObject);
 var
   mCommand: TObject;
+  mLauncher: ILauncher;
 begin
-  mCommand := fLaunchList.KeyData[Sender];
+  mLauncher := fLaunchList.KeyData[Sender];
+  mCommand := mLauncher.Command.UnderObject;
   if mCommand = nil then
     Exit;
   if not (mCommand is TCommand) then
@@ -138,8 +217,10 @@ var
   mO: TObject;
   mCategory: TCategory;
   i: integer;
+  mLauncher: ILauncher;
 begin
-  mO := fLaunchList.KeyData[Sender];
+  mLauncher := fLaunchList.KeyData[Sender];
+  mO := mLauncher.Command.UnderObject;
   if mO = nil then
     Exit;
   if not (mO is TCategory) then
@@ -195,14 +276,17 @@ procedure TLauncherForm.AddAllCommnads(AParentMenu: TMenuItem);
 var
   i: integer;
   mItem: TMenuItem;
+  mLauncher: ILauncher;
 begin
   for i := 0 to fRunList.Count - 1 do
   begin
     mItem := TMenuItem.Create(AParentMenu.Owner);
-    mItem.Caption := fRunList[i].Data.ItemByName['Name'].AsString;
+    mItem.Caption := fRunList.Data[i].Command.ItemByName['Name'].AsString;
     mItem.OnClick := @OnRunCommandClick;
+    mLauncher := fRunList.Data[i];
+    mItem.ImageIndex := mLauncher.ImageIndex;
     AParentMenu.Add(mItem);
-    fLaunchList.Add(mItem, fRunList[i].Data.UnderObject as TCommand);
+    fLaunchList.Add(mItem, mLauncher);
   end;
 end;
 
@@ -222,7 +306,7 @@ begin
     mItem := TMenuItem.Create(AParentMenu.Owner);
     mItem.Caption := mCategory.Name;
     if mCategory.RunAll then begin
-      AddRunAllCategoryCommnad(mCategory, mItem);
+      AddRunAllCategoryCommnad(mList[i].Data, mItem);
       AddSeparator(mItem);
     end;
     AddCategoryCommnads(mCategory, mItem);
@@ -243,7 +327,7 @@ begin
     if mCategory.Commands.Count = 0 then
       Continue;
     if mCategory.RunAllFavorite then
-      AddRunAllCategoryCommnad(mCategory, AParentMenu);
+      AddRunAllCategoryCommnad(mList[i].Data, AParentMenu);
     if mCategory.Favorite then
       AddCategoryCommnads(mCategory, AParentMenu);
   end;
@@ -257,6 +341,7 @@ var
   i: integer;
   mItem: TMenuItem;
   mCommand: TCommand;
+  mLauncher: ILauncher;
 begin
   for i := 0 to ACategory.Commands.Count - 1 do
   begin
@@ -267,20 +352,24 @@ begin
     mItem.Caption := mCommand.Name;
     mItem.OnClick := @OnRunCommandClick;
     AParentMenu.Add(mItem);
-    fLaunchList.Add(mItem, mCommand);
+    mLauncher := fRunList.KeyData[ACategory.Commands[i].Data.ItemByName['ID'].AsString];
+    mItem.ImageIndex := mLauncher.ImageIndex;
+    fLaunchList.Add(mItem, mLauncher);
   end;
 end;
 
-procedure TLauncherForm.AddRunAllCategoryCommnad(const ACategory: TCategory;
+procedure TLauncherForm.AddRunAllCategoryCommnad(const ACategory: IRBData;
   AParentMenu: TMenuItem);
 var
   mItem: TMenuItem;
+  mCategory: TCategory;
 begin
+  mCategory := ACategory.UnderObject as TCategory;
   mItem := TMenuItem.Create(AParentMenu.Owner);
-  mItem.Caption := 'Run all ' + ACategory.Name;
+  mItem.Caption := 'Run all ' + mCategory.Name;
   mItem.OnClick := @OnRunAllCategoryClick;
   AParentMenu.Add(mItem);
-  fLaunchList.Add(mItem, ACategory);
+  //xxxfLaunchList.Add(mItem, TLauncher.New(ACategory, -1));
 end;
 
 procedure TLauncherForm.RebuildMenu(const ARootMenu: TMenuItem);
@@ -309,12 +398,24 @@ begin
 end;
 
 procedure TLauncherForm.ReloadCommands;
+var
+  mList: IPersistRefList;
+  i: integer;
+  mCommand: TCommand;
 begin
-  fRunList := (Store as IPersistQuery).SelectClass('TCommand');
+  //fRunList := (Store as IPersistQuery).SelectClass('TCommand');
+  mList := (Store as IPersistQuery).SelectClass('TCommand');
+  for i := 0 to mList.Count - 1 do
+  begin
+    fRunList.Add(mList[i].Data.ItemByName['ID'].AsString, TLauncher.New(mList[i].Data, ilIcons, OsUtils));
+  end;
 end;
 
 procedure TLauncherForm.Rebuild;
 begin
+  ilIcons.Clear;
+  fRunList.Clear;
+  fLaunchList.Clear;
   ReloadCommands;
   RebuildMenu(pmLaunch.Items);
   RebuildFavoritesMenu(pmFavorites.Items);
@@ -324,10 +425,12 @@ constructor TLauncherForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fLaunchList := TLaunchList.Create;
+  fRunList := TRunList.Create;
 end;
 
 destructor TLauncherForm.Destroy;
 begin
+  FreeAndNil(fRunList);
   FreeAndNil(fLaunchList);
   inherited Destroy;
 end;
