@@ -16,6 +16,7 @@ uses
   trl_upersistxml,
   tvl_udatabinder, tvl_udatabinders, tvl_utallybinders,
   tvl_ibindings, tvl_iedit, tvl_ubehavebinder,
+  tvl_iiconutils, tvl_uiconutils,
   OsUtils, uOsUtils;
 
 type
@@ -147,6 +148,7 @@ var
   mReg: TDIReg;
 begin
   mReg := fDIC.Add(TOsUtils, IOsUtils);
+  mReg := fDIC.Add(TIconUtils, IIconUtils);
 end;
 
 procedure TApp.RegisterGUI;
@@ -170,6 +172,7 @@ begin
   mReg.InjectProp('Commands', IListData, 'CommandsForm');
   mReg.InjectProp('Categories', IListData, 'CategoriesForm');
   mReg.InjectProp('OsUtils', IOsUtils);
+  mReg.InjectProp('IconUtils', IIconUtils);
   //
   mReg := fDIC.Add(TCommandsForm, Application, IListData, 'CommandsForm');
   mReg.InjectProp('Store', IPersistStore, '', mPersistDIC);

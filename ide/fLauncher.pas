@@ -9,7 +9,7 @@ uses
   ExtCtrls, uCommands, fCommands, fCategories,
   fgl, uCategories,
   trl_irttibroker, trl_ifactory, trl_ipersist,
-  tvl_iedit, tvl_ibindings, OsUtils, FPimage;
+  tvl_iedit, tvl_ibindings, OsUtils, FPimage, tvl_iiconutils;
 
 type
 
@@ -34,7 +34,7 @@ type
     fCommand: IRBData;
     fImageIndex: Integer;
     fIcons: TImageList;
-    fOsUtils: IOsUtils;
+    fIconUtils: IIconUtils;
   protected
     // ILauncher
     function GetCommand: IRBData;
@@ -44,7 +44,7 @@ type
     property ImageIndex: integer read GetImageIndex;
   public
     class function New(const ACommand: IRBData; AIcons: TImageList;
-      const AOsUtils: IOsUtils): ILauncher;
+      const AIconUtils: IIconUtils): ILauncher;
   end;
 
   { TLaunchList }
@@ -77,6 +77,7 @@ type
     fCommands: IListData;
     fCategories: IListData;
     fOsUtils: IOsUtils;
+    fIconUtils: IIconUtils;
   protected
     // map command ID -> ILauncher
     fRunList: TRunList;
@@ -117,6 +118,7 @@ type
     property Commands: IListData read fCommands write fCommands;
     property Categories: IListData read fCategories write fCategories;
     property OsUtils: IOsUtils read fOsUtils write fOsUtils;
+    property IconUtils: IIconUtils read fIconUtils write fIconUtils;
   end;
 
 implementation
@@ -131,11 +133,22 @@ begin
 end;
 
 function TLauncher.GetImageIndex: integer;
+var
+  mIcoFile: string;
+  mBitmap: TBitmap;
 begin
   if fImageIndex = -1 then
   begin
-    fImageIndex := fOsUtils.AddApplicationImage(Command.ItemByName['Command'].AsString,
-      fIcons.Height, fIcons);
+    mIcoFile := fIconUtils.FindAppIconFile(Command.ItemByName['Command'].AsString);
+    if mIcoFile <> '' then begin
+      mBitmap := TBitmap.Create;
+      try
+        fIconUtils.RenderAppIcon(mIcoFile, mBitmap);
+        fImageIndex := fIcons.AddMasked(mBitmap, clBlack);
+      finally
+        mBitmap.Free;
+      end;
+    end;
   end;
   Result := fImageIndex;
 end;
@@ -146,7 +159,7 @@ begin
 end;
 
 class function TLauncher.New(const ACommand: IRBData; AIcons: TImageList;
-  const AOsUtils: IOsUtils): ILauncher;
+  const AIconUtils: IIconUtils): ILauncher;
 var
   mLauncher: TLauncher;
 begin
@@ -154,7 +167,7 @@ begin
   mLauncher.Command := ACommand;
   mLauncher.fIcons := AIcons;
   mLauncher.fImageIndex := -1;
-  mLauncher.fOsUtils := AOsUtils;
+  mLauncher.fIconUtils := AIconUtils;
   Result := mLauncher;
 end;
 
@@ -401,13 +414,12 @@ procedure TLauncherForm.ReloadCommands;
 var
   mList: IPersistRefList;
   i: integer;
-  mCommand: TCommand;
 begin
   //fRunList := (Store as IPersistQuery).SelectClass('TCommand');
   mList := (Store as IPersistQuery).SelectClass('TCommand');
   for i := 0 to mList.Count - 1 do
   begin
-    fRunList.Add(mList[i].Data.ItemByName['ID'].AsString, TLauncher.New(mList[i].Data, ilIcons, OsUtils));
+    fRunList.Add(mList[i].Data.ItemByName['ID'].AsString, TLauncher.New(mList[i].Data, ilIcons, IconUtils));
   end;
 end;
 
