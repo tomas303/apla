@@ -134,20 +134,16 @@ end;
 
 function TLauncher.GetImageIndex: integer;
 var
-  mIcoFile: string;
   mBitmap: TBitmap;
 begin
   if fImageIndex = -1 then
   begin
-    mIcoFile := fIconUtils.FindAppIconFile(Command.ItemByName['Command'].AsString);
-    if mIcoFile <> '' then begin
-      mBitmap := TBitmap.Create;
-      try
-        fIconUtils.RenderAppIcon(mIcoFile, mBitmap);
-        fImageIndex := fIcons.AddMasked(mBitmap, clBlack);
-      finally
-        mBitmap.Free;
-      end;
+    mBitmap := TBitmap.Create;
+    try
+      fIconUtils.RenderAppIcon(Command.ItemByName['Command'].AsString, mBitmap, fIcons.Height);
+      fImageIndex := fIcons.AddMasked(mBitmap, clBlack);
+    finally
+      mBitmap.Free;
     end;
   end;
   Result := fImageIndex;

@@ -4322,6 +4322,7 @@ object LauncherForm: TLauncherForm
   end
   object ilIcons: TImageList
     AllocBy = 16
+    BkColor = clBlack
     DrawingStyle = dsTransparent
     left = 40
     top = 56

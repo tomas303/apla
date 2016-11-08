@@ -310,9 +310,6 @@
       <SrcPath Value="../libs/rttiutilizepackages/tvr.rtti.broker;../libs/rttiutilizepackages/tvr.rtti.idebinder;../libs/rttiutilizepackages/tvr.rtti.serializer"/>
     </SearchPaths>
     <Linking>
-      <Debugging>
-        <DebugInfoType Value="dsDwarf2"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
