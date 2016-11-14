@@ -141,7 +141,10 @@ begin
     mBitmap := TBitmap.Create;
     try
       fIconUtils.RenderAppIcon(Command.ItemByName['Command'].AsString, mBitmap, fIcons.Height);
-      fImageIndex := fIcons.AddMasked(mBitmap, clBlack);
+      if mBitmap.Transparent then
+        fImageIndex := fIcons.AddMasked(mBitmap, mBitmap.TransparentColor)
+      else
+        fImageIndex := fIcons.Add(mBitmap, nil);
     finally
       mBitmap.Free;
     end;
@@ -378,7 +381,7 @@ begin
   mItem.Caption := 'Run all ' + mCategory.Name;
   mItem.OnClick := @OnRunAllCategoryClick;
   AParentMenu.Add(mItem);
-  //xxxfLaunchList.Add(mItem, TLauncher.New(ACategory, -1));
+  fLaunchList.Add(mItem, TLauncher.New(ACategory, ilIcons, IconUtils));
 end;
 
 procedure TLauncherForm.RebuildMenu(const ARootMenu: TMenuItem);
@@ -411,7 +414,6 @@ var
   mList: IPersistRefList;
   i: integer;
 begin
-  //fRunList := (Store as IPersistQuery).SelectClass('TCommand');
   mList := (Store as IPersistQuery).SelectClass('TCommand');
   for i := 0 to mList.Count - 1 do
   begin
