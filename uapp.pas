@@ -17,7 +17,8 @@ uses
   tvl_udatabinder, tvl_udatabinders, tvl_utallybinders,
   tvl_ibindings, tvl_iedit, tvl_ubehavebinder,
   tvl_iiconutils, tvl_uiconutils,
-  OsUtils, uOsUtils;
+  trl_isysutils, trl_usysutils,
+  tvl_igui, tvl_ugui;
 
 type
 
@@ -45,7 +46,7 @@ type
     fDIC: TDIContainer;
     fDataFile: string;
   protected
-    procedure InjectPersistRef(const AItem: IRBDataItem);
+    procedure InjectPersistRef(const AItem: IRBDataItem; ADIC: TDICustomContainer);
     procedure Setup;
     procedure RegisterDataClass(ADIC: TDIContainer; AClass: TClass);
     procedure RegisterCore;
@@ -81,10 +82,10 @@ end;
 
 { TApp }
 
-procedure TApp.InjectPersistRef(const AItem: IRBDataItem);
+procedure TApp.InjectPersistRef(const AItem: IRBDataItem; ADIC: TDICustomContainer);
 var
   mPersistDIC: TDIContainer;
-  mOSUtils: IOsUtils;
+  mSysUtils: ISysUtils;
 begin
   if AItem.IsInterface and Supports(AItem.AsInterface, IPersistRef) then
   begin
@@ -100,8 +101,8 @@ begin
     (AItem.AsInterface as IPersistManyRefs).Factory := mPersistDIC.Locate(IPersistFactory, cPersistRID);
   end;
   if AItem.IsID then begin
-    mOSUtils := fDIC.Locate(IOsUtils);
-    AItem.AsString := mOSUtils.NewGID;
+    mSysUtils := fDIC.Locate(ISysUtils);
+    AItem.AsString := mSysUtils.NewGID;
   end;
 end;
 
@@ -147,7 +148,8 @@ procedure TApp.RegisterCore;
 var
   mReg: TDIReg;
 begin
-  mReg := fDIC.Add(TOsUtils, IOsUtils);
+  mReg := fDIC.Add(TGUI, IGUI);
+  mReg := fDIC.Add(TSysUtils, ISysUtils);
   mReg := fDIC.Add(TIconUtils, IIconUtils);
 end;
 
@@ -171,7 +173,7 @@ begin
   mReg.InjectProp('Store', IPersistStore, '', mPersistDIC);
   mReg.InjectProp('Commands', IListData, 'CommandsForm');
   mReg.InjectProp('Categories', IListData, 'CategoriesForm');
-  mReg.InjectProp('OsUtils', IOsUtils);
+  mReg.InjectProp('GUI', IGUI);
   mReg.InjectProp('IconUtils', IIconUtils);
   //
   mReg := fDIC.Add(TCommandsForm, Application, IListData, 'CommandsForm');

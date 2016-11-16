@@ -9,7 +9,7 @@ uses
   ExtCtrls, uCommands, fCommands, fCategories,
   fgl, uCategories,
   trl_irttibroker, trl_ifactory, trl_ipersist,
-  tvl_iedit, tvl_ibindings, OsUtils, FPimage, tvl_iiconutils;
+  tvl_iedit, tvl_ibindings, FPimage, tvl_iiconutils, tvl_igui;
 
 type
 
@@ -76,7 +76,7 @@ type
     fStore: IPersistStore;
     fCommands: IListData;
     fCategories: IListData;
-    fOsUtils: IOsUtils;
+    fGUI: IGUI;
     fIconUtils: IIconUtils;
   protected
     // map command ID -> ILauncher
@@ -117,7 +117,7 @@ type
     property Store: IPersistStore read fStore write fStore;
     property Commands: IListData read fCommands write fCommands;
     property Categories: IListData read fCategories write fCategories;
-    property OsUtils: IOsUtils read fOsUtils write fOsUtils;
+    property GUI: IGUI read fGUI write fGUI;
     property IconUtils: IIconUtils read fIconUtils write fIconUtils;
   end;
 
@@ -181,7 +181,7 @@ end;
 
 procedure TLauncherForm.StartUp;
 begin
-  ilIcons.Height := OsUtils.MenuHeight;
+  ilIcons.Height := GUI.MenuHeight;
   ilIcons.Width := ilIcons.Height;
   Rebuild;
 end;
