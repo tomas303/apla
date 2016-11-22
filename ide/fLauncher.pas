@@ -9,16 +9,16 @@ uses
   ExtCtrls, uCommands, fCommands, fCategories,
   fgl, uCategories,
   trl_irttibroker, trl_ifactory, trl_ipersist,
-  tvl_iedit, tvl_ibindings, FPimage, tvl_iiconutils, tvl_igui;
+  tvl_iedit, tvl_ibindings, FPimage, tvl_iiconutils, tvl_igui, tal_ilauncher;
 
 type
 
   ELauncher = class(Exception)
   end;
 
-  { ILauncher }
+  { ICommandLauncher }
 
-  ILauncher = interface
+  ICommandLauncher = interface
   ['{B0DFA1A4-2D6B-4EFA-98D0-53F69D4DA632}']
     function GetCommand: IRBData;
     function GetImageIndex: integer;
@@ -27,16 +27,16 @@ type
     property ImageIndex: integer read GetImageIndex;
   end;
 
-  { TLauncher }
+  { TCommandLauncher }
 
-  TLauncher = class(TInterfacedObject, ILauncher)
+  TCommandLauncher = class(TInterfacedObject, ICommandLauncher)
   protected
     fCommand: IRBData;
     fImageIndex: Integer;
     fIcons: TImageList;
     fIconUtils: IIconUtils;
   protected
-    // ILauncher
+    // ICommandLauncher
     function GetCommand: IRBData;
     function GetImageIndex: integer;
     procedure SetCommand(const AValue: IRBData);
@@ -44,22 +44,22 @@ type
     property ImageIndex: integer read GetImageIndex;
   public
     class function New(const ACommand: IRBData; AIcons: TImageList;
-      const AIconUtils: IIconUtils): ILauncher;
+      const AIconUtils: IIconUtils): ICommandLauncher;
   end;
 
   { TLaunchList }
 
-  TLaunchList = class(specialize TFPGMap<pointer, ILauncher>)
+  TLaunchList = class(specialize TFPGMap<pointer, ICommandLauncher>)
   end;
 
   { TRunLaunchList }
 
-  TRunList = class(specialize TFPGMap<string, ILauncher>)
+  TRunList = class(specialize TFPGMap<string, ICommandLauncher>)
   end;
 
   { TLauncherForm }
 
-  TLauncherForm = class(TForm, IMainForm)
+  TLauncherForm = class(TForm, tal_ilauncher.IMainForm)
     ilIcons: TImageList;
     MenuItem4: TMenuItem;
     mnMain: TMainMenu;
@@ -79,15 +79,14 @@ type
     fGUI: IGUI;
     fIconUtils: IIconUtils;
   protected
-    // map command ID -> ILauncher
+    // map command ID -> ICommandLauncher
     fRunList: TRunList;
-    // map TMenuItem -> ILauncher
+    // map TMenuItem -> ICommandLauncher
     fLaunchList: TLaunchList;
   protected
     //IMainForm
     procedure StartUp;
     procedure ShutDown;
-    procedure ConnectCloseHandler(OnCloseHandler: TCloseEvent);
   protected
     function CreateMenuItem(AParentMenu: TMenuItem; const ACaption: string;
       AOnClick: TNotifyEvent; ATag: integer = 0): TMenuItem;
@@ -125,14 +124,14 @@ implementation
 
 {$R *.lfm}
 
-{ TLauncher }
+{ TCommandLauncher }
 
-function TLauncher.GetCommand: IRBData;
+function TCommandLauncher.GetCommand: IRBData;
 begin
   Result := fCommand;
 end;
 
-function TLauncher.GetImageIndex: integer;
+function TCommandLauncher.GetImageIndex: integer;
 var
   mBitmap: TBitmap;
 begin
@@ -152,17 +151,17 @@ begin
   Result := fImageIndex;
 end;
 
-procedure TLauncher.SetCommand(const AValue: IRBData);
+procedure TCommandLauncher.SetCommand(const AValue: IRBData);
 begin
   fCommand := AValue;
 end;
 
-class function TLauncher.New(const ACommand: IRBData; AIcons: TImageList;
-  const AIconUtils: IIconUtils): ILauncher;
+class function TCommandLauncher.New(const ACommand: IRBData; AIcons: TImageList;
+  const AIconUtils: IIconUtils): ICommandLauncher;
 var
-  mLauncher: TLauncher;
+  mLauncher: TCommandLauncher;
 begin
-  mLauncher := TLauncher.Create;
+  mLauncher := TCommandLauncher.Create;
   mLauncher.Command := ACommand;
   mLauncher.fIcons := AIcons;
   mLauncher.fImageIndex := -1;
@@ -190,11 +189,6 @@ procedure TLauncherForm.ShutDown;
 begin
 end;
 
-procedure TLauncherForm.ConnectCloseHandler(OnCloseHandler: TCloseEvent);
-begin
-  AddHandlerClose(OnCloseHandler);
-end;
-
 function TLauncherForm.CreateMenuItem(AParentMenu: TMenuItem;
   const ACaption: string; AOnClick: TNotifyEvent; ATag: integer): TMenuItem;
 begin
@@ -213,7 +207,7 @@ end;
 procedure TLauncherForm.OnRunCommandClick(Sender: TObject);
 var
   mCommand: TObject;
-  mLauncher: ILauncher;
+  mLauncher: ICommandLauncher;
 begin
   mLauncher := fLaunchList.KeyData[Sender];
   mCommand := mLauncher.Command.UnderObject;
@@ -229,7 +223,7 @@ var
   mO: TObject;
   mCategory: TCategory;
   i: integer;
-  mLauncher: ILauncher;
+  mLauncher: ICommandLauncher;
 begin
   mLauncher := fLaunchList.KeyData[Sender];
   mO := mLauncher.Command.UnderObject;
@@ -288,7 +282,7 @@ procedure TLauncherForm.AddAllCommnads(AParentMenu: TMenuItem);
 var
   i: integer;
   mItem: TMenuItem;
-  mLauncher: ILauncher;
+  mLauncher: ICommandLauncher;
 begin
   for i := 0 to fRunList.Count - 1 do
   begin
@@ -353,7 +347,7 @@ var
   i: integer;
   mItem: TMenuItem;
   mCommand: TCommand;
-  mLauncher: ILauncher;
+  mLauncher: ICommandLauncher;
 begin
   for i := 0 to ACategory.Commands.Count - 1 do
   begin
@@ -381,7 +375,7 @@ begin
   mItem.Caption := 'Run all ' + mCategory.Name;
   mItem.OnClick := @OnRunAllCategoryClick;
   AParentMenu.Add(mItem);
-  fLaunchList.Add(mItem, TLauncher.New(ACategory, ilIcons, IconUtils));
+  fLaunchList.Add(mItem, TCommandLauncher.New(ACategory, ilIcons, IconUtils));
 end;
 
 procedure TLauncherForm.RebuildMenu(const ARootMenu: TMenuItem);
@@ -417,7 +411,7 @@ begin
   mList := (Store as IPersistQuery).SelectClass('TCommand');
   for i := 0 to mList.Count - 1 do
   begin
-    fRunList.Add(mList[i].Data.ItemByName['ID'].AsString, TLauncher.New(mList[i].Data, ilIcons, IconUtils));
+    fRunList.Add(mList[i].Data.ItemByName['ID'].AsString, TCommandLauncher.New(mList[i].Data, ilIcons, IconUtils));
   end;
 end;
 
