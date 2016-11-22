@@ -44,7 +44,7 @@ var
   mReg: TDIReg;
 begin
   mReg := DIC.Add(TGUILauncher, ILauncher);
-  mReg.InjectProp('MainForm', tal_ilauncher.IMainForm);
+  mReg.InjectProp('MainForm', IMainForm);
   mReg := DIC.Add(TGUI, IGUI);
   mReg := DIC.Add(TIconUtils, IIconUtils);
 end;
@@ -55,7 +55,7 @@ var
 begin
   mReg := DIC.Add(TRBBehavioralBinder, IRBBehavioralBinder);
   //
-  mReg := DIC.Add(TLauncherForm, Application, tal_ilauncher.IMainForm);
+  mReg := DIC.Add(TLauncherForm, Application, IMainForm);
   mReg.InjectProp('Store', IPersistStore);
   mReg.InjectProp('Commands', IListData, 'CommandsForm');
   mReg.InjectProp('Categories', IListData, 'CategoriesForm');

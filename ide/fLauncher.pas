@@ -59,7 +59,7 @@ type
 
   { TLauncherForm }
 
-  TLauncherForm = class(TForm, tal_ilauncher.IMainForm)
+  TLauncherForm = class(TForm, IMainForm)
     ilIcons: TImageList;
     MenuItem4: TMenuItem;
     mnMain: TMainMenu;
