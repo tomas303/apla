@@ -9,7 +9,7 @@ uses
   StdCtrls, ExtCtrls, Grids, Buttons, Menus,
   uCommands, fCommand, types,
   trl_irttibroker, trl_ifactory, trl_ipersist,
-  tvl_iedit, tvl_ibindings;
+  tal_iedit, tvl_ibindings;
 
 type
 

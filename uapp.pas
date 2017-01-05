@@ -16,7 +16,7 @@ uses
   trl_irttibroker, trl_urttibroker,
   trl_upersistxml,
   tvl_udatabinder, tvl_utallybinders,
-  tvl_ibindings, tvl_iedit, tvl_ubehavebinder,
+  tvl_ibindings, tal_iedit, tvl_ubehavebinder,
   tvl_iiconutils, tvl_uiconutils,
   tvl_igui, tvl_ugui;
 

@@ -9,7 +9,7 @@ uses
   ExtCtrls, uCommands, fCommands, fCategories,
   fgl, uCategories,
   trl_irttibroker, trl_ifactory, trl_ipersist,
-  tvl_iedit, tvl_ibindings, FPimage, tvl_iiconutils, tvl_igui, tal_ilauncher;
+  tal_iedit, tvl_ibindings, FPimage, tvl_iiconutils, tvl_igui, tal_ilauncher;
 
 type
 
